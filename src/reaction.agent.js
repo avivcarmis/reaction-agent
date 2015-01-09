@@ -595,23 +595,23 @@
         Validation.prototype.init = function() {
                 var self = this;
                 if (this.settings.validateType) {
-                        if (!self.run) return;
-                        $(this).keypress(function(e) {
+                        $(this.element).keypress(function(e) {
+                                if (!self.run) return;
                                 var value = this.value + String.fromCharCode(e.keyCode);
                                 var isValid = self.test(value);
                                 if (isValid) {
-                                        self.success();
+                                        self.success.call(self.element);
                                         return true;
                                 }
                                 else {
-                                        self.fail();
+                                        self.fail.call(self.element);
                                         return false;
                                 }
                         });
                 }
                 if (this.settings.validateBlur) {
-                        if (!self.run) return;
-                        $(this).blur(function() {
+                        $(this.element).blur(function() {
+                                if (!self.run) return;
                                 var isValid = self.test(this.value);
                                 if (isValid) self.success();
                                 else self.fail();
@@ -722,6 +722,18 @@
         $.fn.getHeight = function(padding, border, margin) {
                 return getDimension(this, 'height', padding, border, margin);
         };
+        
+        /**
+         * Receive a variadic number of string arguments, each stating a css property name,
+         * return an object to apply with jquery .css method to restore the element to it's original state.
+         * @returns {Object}
+         */
+        $.fn.getCSSRestorer = function() {
+                var style = this.attr("style") || "";
+                var restoreObject = {};
+                for (var i = 0; i < arguments.length; i++) restoreObject[arguments[i]] = style.indexOf(arguments[i]) == -1 ? "" : this.css(arguments[i]);
+                return restoreObject;
+        };
 
         /**
          * Receive a function callback, then make sure the element is visible, then runs the callback, then returns the element to it's original state.
@@ -741,18 +753,6 @@
                 callback.apply(element.get(0));
                 for (var i = 0; i < hiddenParents.length; i++) hiddenParents[i].element.css(hiddenParents[i].css).attr("class", hiddenParents[i].classes);
                 return this;
-        };
-        
-        /**
-         * Receive a variadic number of string arguments, each stating a css property name,
-         * return an object to apply with jquery .css method to restore the element to it's original state.
-         * @returns {Object}
-         */
-        $.fn.getCSSRestorer = function() {
-                var style = this.attr("style") || "";
-                var restoreObject = {};
-                for (var i = 0; i < arguments.length; i++) restoreObject[arguments[i]] = style.indexOf(arguments[i]) == -1 ? "" : this.css(arguments[i]);
-                return restoreObject;
         };
         
         /**
@@ -812,28 +812,6 @@
         }
         
         /**
-         * Receive a string message, returns a function that prints the message to browser console.
-         * @param {String} msg
-         * @returns {Function}
-         */
-        function consoleLogger(msg) {
-                return function() {
-                        console.log(msg);
-                };
-        }
-        
-        /**
-         * Receive a string message, returns a function that alerts the message.
-         * @param {String} msg
-         * @returns {Function}
-         */
-        function alerter(msg) {
-                return function() {
-                        alert(msg);
-                };
-        }
-        
-        /**
          * Retrieves a parameter value for the caller function by given settings.
          * typeOrTest can either be a function that receives the param and returns true if it is the requested param or false otherwise,
          * or a string stating the parameter type (e.g. "string", "function" etc...).
@@ -870,10 +848,65 @@
                 $(window).load(handler).resize(handler);
         }
         
-// Normalize
+        /**
+         * A set of function factory methods to easily create simple common functions.
+         * @static
+         * @type Object
+         */
+        var MethodFactory = {
+        
+                /**
+                 * Receive a string message, returns a function that logs the message to browser console.
+                 * @param {String} msg
+                 * @returns {Function}
+                 */
+                log: function(msg) {
+                        return function() {
+                                if (isDefined(console.log)) console.log(msg);
+                        };
+                },
+        
+                /**
+                 * Receive a string message, returns a function that debugs the message to browser console.
+                 * @param {String} msg
+                 * @returns {Function}
+                 */
+                debug: function(msg) {
+                        return function() {
+                                if (isDefined(console.debug)) console.debug(msg);
+                        };
+                },
+        
+                /**
+                 * Receive a string message, returns a function that errors the message to browser console.
+                 * @param {String} msg
+                 * @returns {Function}
+                 */
+                error: function(msg) {
+                        return function() {
+                                if (isDefined(console.error)) console.error(msg);
+                        };
+                },
 
-        if (notDefined(console)) {
-                var console = {
-                        log: function() {}
-                };
-        }
+                /**
+                 * Receive a string message, returns a function that alerts the message.
+                 * @param {String} msg
+                 * @returns {Function}
+                 */
+                alert: function(msg) {
+                        return function() {
+                                alert(msg);
+                        };
+                },
+                
+                /**
+                 * Returns a function that receive a string parameter and returns whether or not the string is not empty.
+                 * @returns {Function}
+                 */
+                notEmpty: function() {
+                        return function(val) {
+                                return val != '';
+                        }
+                }
+                
+        };
