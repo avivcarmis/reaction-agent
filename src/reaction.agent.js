@@ -382,60 +382,6 @@
         }
 
         /**
-         * Initializes the breakpoint service
-         * @returns {undefined}
-         */
-        ScrollAgent.prototype.init = function() {
-                if (this.initialized) return;
-                this.initialized = true;
-                var self = this;
-                $(window).scroll(function() {
-                        var newCurrent = self.calcBreakpointIndex($(window).scrollTop());
-                        if (self.current == newCurrent) return;
-                        self.current = newCurrent;
-                        self.breakpoints[self.current].handler();
-                });
-                $(window).resize(this.sort);
-        };
-
-        /**
-         * Initializes the event service
-         * @returns {undefined}
-         */
-        ScrollAgent.prototype.activateEvents = function() {
-                this.top = $(window).scrollTop();
-                var self = this;
-                $(window).scroll(function() {
-                        var currentTop = $(window).scrollTop();
-                        if (currentTop > self.top) {
-                                $(document).trigger('scrolldown');
-                        }
-                        else {
-                                $(document).trigger('scrollup');
-                        }
-                        self.top = currentTop;
-                });
-        };
-
-        /**
-         * Preforms a binary search on the breakpoints array to find the most smallest breakpoint in the current window top,
-         * Returns the index of this breakpoint.
-         * @param {Number} currentTop
-         * @param {Number} rangeLeft
-         * @param {Number} rangeRight
-         * @returns {Number}
-         */
-        ScrollAgent.prototype.calcBreakpointIndex = function(currentTop, rangeLeft, rangeRight) {
-                if (notDefined(rangeLeft)) rangeLeft = 0;
-                if (notDefined(rangeRight)) rangeRight = this.breakpoints.length;
-                if (rangeRight - rangeLeft <= 1) return rangeLeft == this.breakpoints.length ? this.breakpoints.length - 1 : rangeLeft;
-                var middle = Math.floor(((rangeRight - rangeLeft) / 2) + rangeLeft);
-                var bpValue = this.breakpoints[middle].getValue();
-                if (bpValue > currentTop) return this.calcBreakpointIndex(currentTop, rangeLeft, middle);
-                else return this.calcBreakpointIndex(currentTop, middle, rangeRight);
-        };
-
-        /**
          * Receive a test, function handler to be executed for the breakpoint, and an optional offset from the test value,
          * and creates a new breakpoint, meaning when the tested value + offset it reached with window scroll top, the handler is executed.
          * The test value can be received as a Number, representing a certain scroll top value, a function returning a value for dynamic
@@ -464,6 +410,60 @@
                 if (breakpointIndex == -1) return false;
                 this.handlerDescriptors.splice(breakpointIndex, 1);
                 return true;
+        };
+
+        /**
+         * Initializes the breakpoint service
+         * @returns {undefined}
+         */
+        ScrollAgent.prototype.init = function() {
+                if (this.initialized) return;
+                this.initialized = true;
+                var self = this;
+                $(window).scroll(function() {
+                        var newCurrent = self.calcBreakpointIndex($(window).scrollTop());
+                        if (self.current == newCurrent) return;
+                        self.current = newCurrent;
+                        self.breakpoints[self.current].handler();
+                });
+                $(window).resize(this.sort);
+        };
+
+        /**
+         * Initializes the event service
+         * @returns {undefined}
+         */
+        ScrollAgent.prototype.activateEvents = function() {
+                this.top = $(window).scrollTop();
+                var self = this;
+                $(window).scroll(function() {
+                        var currentTop = $(window).scrollTop();
+                        if (currentTop > self.top) {
+                                $(document).add(window).trigger('scrolldown');
+                        }
+                        else {
+                                $(document).add(window).trigger('scrollup');
+                        }
+                        self.top = currentTop;
+                });
+        };
+
+        /**
+         * Preforms a binary search on the breakpoints array to find the most smallest breakpoint in the current window top,
+         * Returns the index of this breakpoint.
+         * @param {Number} currentTop
+         * @param {Number} rangeLeft
+         * @param {Number} rangeRight
+         * @returns {Number}
+         */
+        ScrollAgent.prototype.calcBreakpointIndex = function(currentTop, rangeLeft, rangeRight) {
+                if (notDefined(rangeLeft)) rangeLeft = 0;
+                if (notDefined(rangeRight)) rangeRight = this.breakpoints.length;
+                if (rangeRight - rangeLeft <= 1) return rangeLeft == this.breakpoints.length ? this.breakpoints.length - 1 : rangeLeft;
+                var middle = Math.floor(((rangeRight - rangeLeft) / 2) + rangeLeft);
+                var bpValue = this.breakpoints[middle].getValue();
+                if (bpValue > currentTop) return this.calcBreakpointIndex(currentTop, rangeLeft, middle);
+                else return this.calcBreakpointIndex(currentTop, middle, rangeRight);
         };
 
         /**
@@ -654,7 +654,7 @@
          * @param {Object} [settings]
          * @returns {jQuery}
          */
-        $.fn.validation = function(tester, success, fail, settings) {
+        $.fn.validationAgent = function(tester, success, fail, settings) {
                 if (typeof tester == "string") { // command
                         var validationObjects = [];
                         this.each(function() {
@@ -816,7 +816,7 @@
          * @param {String} msg
          * @returns {Function}
          */
-        function consoleTest(msg) {
+        function consoleLogger(msg) {
                 return function() {
                         console.log(msg);
                 };
@@ -827,7 +827,7 @@
          * @param {String} msg
          * @returns {Function}
          */
-        function alertTest(msg) {
+        function alerter(msg) {
                 return function() {
                         alert(msg);
                 };
