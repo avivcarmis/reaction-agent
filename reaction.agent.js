@@ -377,7 +377,7 @@
          */
         function ScrollAgent() {
                 this.breakpoints = [];
-                this.current = 0;
+                this.current = null;
                 this.initialized = false;
         }
 
@@ -396,7 +396,6 @@
                 this.init();
                 var breakpointObject = new ScrollAgentBreakPoint(test, handler, offset);
                 this.breakpoints.push(breakpointObject);
-                this.sort();
                 return breakpointObject.getKey();
         };
 
@@ -408,7 +407,7 @@
         ScrollAgent.prototype.remove = function(key) {
                 var breakpointIndex = this.getBreakpointIndexByKey(key);
                 if (breakpointIndex == -1) return false;
-                this.handlerDescriptors.splice(breakpointIndex, 1);
+                this.breakpoints.splice(breakpointIndex, 1);
                 return true;
         };
 
@@ -420,20 +419,20 @@
                 if (this.initialized) return;
                 this.initialized = true;
                 var self = this;
-                $(window).scroll(function() {
-                        var newCurrent = self.calcBreakpointIndex($(window).scrollTop());
-                        if (self.current == newCurrent) return;
+                var scrollHandler = function() {
+                        var newCurrent = self.calcBreakpointIndex();
+                        if (self.current === newCurrent) return;
                         self.current = newCurrent;
                         self.breakpoints[self.current].handler();
-                });
-                $(window).resize(this.sort);
+                };
+                $(window).scroll(scrollHandler).resize(scrollHandler).load(scrollHandler);
         };
 
         /**
          * Initializes the event service
          * @returns {undefined}
          */
-        ScrollAgent.prototype.activateEvents = function() {
+        ScrollAgent.activateEvents = function() {
                 this.top = $(window).scrollTop();
                 var self = this;
                 $(window).scroll(function() {
@@ -447,38 +446,22 @@
                         self.top = currentTop;
                 });
         };
-
+        
         /**
-         * Preforms a binary search on the breakpoints array to find the most smallest breakpoint in the current window top,
-         * Returns the index of this breakpoint.
-         * @param {Number} currentTop
-         * @param {Number} rangeLeft
-         * @param {Number} rangeRight
+         * Preforms a linear search on the breakpoints array to find the smallest breakpoint in the current window top, and returns the index of this breakpoint.
          * @returns {Number}
          */
-        ScrollAgent.prototype.calcBreakpointIndex = function(currentTop, rangeLeft, rangeRight) {
-                if (notDefined(rangeLeft)) rangeLeft = 0;
-                if (notDefined(rangeRight)) rangeRight = this.breakpoints.length;
-                if (rangeRight - rangeLeft <= 1) return rangeLeft == this.breakpoints.length ? this.breakpoints.length - 1 : rangeLeft;
-                var middle = Math.floor(((rangeRight - rangeLeft) / 2) + rangeLeft);
-                var bpValue = this.breakpoints[middle].getValue();
-                if (bpValue > currentTop) return this.calcBreakpointIndex(currentTop, rangeLeft, middle);
-                else return this.calcBreakpointIndex(currentTop, middle, rangeRight);
-        };
-
-        /**
-         * Sorts the breakpoint array by the value of each breakpoint to able a binary search on window scroll event.
-         * Updates the Agent current pointer if needed.
-         * @returns {undefined}
-         */
-        ScrollAgent.prototype.sort = function() {
-                var currentBreakpointKey = this.breakpoints[this.current].getKey();
-                this.breakpoints.sort(function(a, b) {
-                        return a.getValue() - b.getValue();
-                });
-                if (currentBreakpointKey == this.breakpoints[this.current].getKey()) return;
-                var currentIndex = this.getBreakpointIndexByKey(currentBreakpointKey);
-                this.current = currentIndex == -1 ? 0 : currentIndex;
+        ScrollAgent.prototype.calcBreakpointIndex = function() {
+                var top = $(window).scrollTop();
+                var mostMatching = 0, lastValue = 0;
+                for (var i = 0; i < this.breakpoints.length; i++) {
+                        var currentValue = this.breakpoints[i].getValue();
+                        if (top >= currentValue && currentValue > lastValue) {
+                                mostMatching = i;
+                                lastValue = currentValue;
+                        }
+                }
+                return mostMatching;
         };
 
         /**
@@ -551,7 +534,8 @@
                         return test;
                 };
                 return function() {
-                        return $(test).offset().top;
+                        var element = $(test);
+                        return element.length > 0 ? element.offset().top : $(document).height();
                 };
         };
         
@@ -559,8 +543,8 @@
          * End of class ScrollAgentBreakPoint
          */
 
-        // export ScrollAgent instance
-        window.ScrollAgent = new ScrollAgent();
+        // export ScrollAgent class
+        window.ScrollAgent = ScrollAgent;
         
 })();
 
@@ -840,13 +824,25 @@
         
         /**
          * Binds a handler function to run on document.ready, window.load and window.resize events.
+         * If initialize is set, execute the handler once immediately.
          * @param {Function} handler
+         * @param {Boolean} [initialize]
          * @returns {undefined}
          */
-        function responsiveBind(handler) {
+        function responsiveBind(handler, initialize) {
                 $(handler);
                 $(window).load(handler).resize(handler);
+                if (initialize === true) handler();
         }
+        
+        /**
+         * Extending String prototype
+         * Returns the same string with first letter capitalized
+         * @returns {String}
+         */
+        String.prototype.ucfirst = function() {
+                return this.charAt(0).toUpperCase() + this.slice(1);
+        };
         
         /**
          * A set of function factory methods to easily create simple common functions.
