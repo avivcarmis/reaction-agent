@@ -2,11 +2,11 @@
 <html lang="en">
         <head>
                 <meta charset="utf-8">
-                <title>REACTION AGENT | Javascript Development Utilities Framework</title>
+                <title>Validation Agent With DOM Agent Integration | Examples | REACTION AGENT</title>
                 <link rel="icon" type="image/png" href="https://avivcarmis.github.io/reaction-agent/static/img/icon.png">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <meta name="description" content="Reaction Agent is a powerful light weight javascript framework to easily manage and track DOM Changes, keyboard and page scroll events">
-                <meta name="keywords" content="reaction agent javascript framework developer scroll keypress">
+                <meta name="description" content="An example of how to simplify the usage of jQuery plugins with the DOM Agent">
+                <meta name="keywords" content="validation agent dom agent integration reaction agent example">
                 <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap.min.css">
                 <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap-theme.min.css">
                 <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700|Anton' rel='stylesheet' type='text/css'>
@@ -29,7 +29,7 @@
                                 </button>
                                 <div class="row">
                                         <div id="tagline" class="col-sm-5">
-                                                <a class="active" id="home-link" href="https://avivcarmis.github.io/reaction-agent/" title="Go to main page" style="float: left;">
+                                                <a id="home-link" href="https://avivcarmis.github.io/reaction-agent/" title="Go to main page" style="float: left;">
                                                         <div>
                                                                 <img class="logo" src="https://avivcarmis.github.io/reaction-agent/static/img/logo-small.png" alt="Reaction Agent framework logo man tearing jacket">
                                                         </div>
@@ -41,7 +41,7 @@
                                                 <nav id="navbar" class="navbar-collapse collapse">
                                                         <ul class="nav navbar-nav navbar-right">
                                                                 <li><a href="https://avivcarmis.github.io/reaction-agent/getting-started" title="Full Documentation of ReactionAgent">Getting Started</a></li>
-                                                                <li><a href="https://avivcarmis.github.io/reaction-agent/code-examples" title="Examples and code snippents of ReactionAgent">Examples</a></li>
+                                                                <li class="active"><a href="https://avivcarmis.github.io/reaction-agent/code-examples" title="Examples and code snippents of ReactionAgent">Examples</a></li>
                                                                 <li><a href="https://avivcarmis.github.io/reaction-agent/license" title="License and info">License</a></li>
                                                         </ul>
                                                 </nav>
@@ -49,60 +49,57 @@
                                 </div>
                         </div>
                 </header>
-                <main><section class="text-center">
-        <img style="max-width: 90%;" src="https://avivcarmis.github.io/reaction-agent/static/img/logo.png" alt="Reaction Agent - Javascript Developer Utilities Framework">
-</section>
-<section class="text-center">
-        <div class="container">
-                <div class="row">
-                        <div class="col-xs-12">
-                                <p class="lead">A powerful light weight javascript framework to easily manage and track DOM Changes, keyboard and page scroll events...and more!</p>
-                                <div>
-                                        <h3 style="margin-top: 30px;"><a href="https://github.com/avivcarmis/reaction-agent/archive/master.zip" title="Download ReactionAgent">Download v1.1</a></h3>
-                                </div>
-                                <hr>
-                                <h3>
-                                        <a class="mobile-bottom mobile-block" href="https://avivcarmis.github.io/reaction-agent/getting-started" title="">Getting Started</a>
-                                        <span class="hidden-xs"> ; </span>
-                                        <span class="text visible-xs-block mobile-bottom">or</span>
-                                        <a href="https://github.com/avivcarmis/reaction-agent/" title="Go to the project page to Git Hub">View On GibHub</a>
-                                </h3>
-                        </div>
+                <main><div class="container">
+        <div class="row">
+                <div class="col-xs-12">
+                        <article>
+                                <section>
+                                        <h1>Validation Agent And DOM Agent Integration</h1>
+                                        <p>The best way to use the validation agent is through DOM element custom data attributes. In order to write a DOM element that gets validated automatically, we can embed some DOM Agent constructor code to assign the Validation Agent for all elements containing certain data.</p>
+                                </section>
+                                <section>
+                                        <h2>The Source Code</h2>
+                                        <code class="html">&lt;script type=&quot;text/javascript&quot;&gt;
+        DOMAgent.add('[data-validation]', function() {
+                var regexp = new RegExp($(this).attr('data-validation'));
+                $(this).validationAgent(regexp, function() {
+                        $(this).popover('destroy');
+                }, function() {
+                        $(this).popover('show');
+                });
+        });
+&lt;/script&gt;
+&lt;form&gt;
+        &lt;input class=&quot;form-control&quot; type=&quot;text&quot; name=&quot;username&quot; value=&quot;&quot; placeholder=&quot;Your username here&quot; data-validation=&quot;^[a-zA-Z0-9]+$&quot; data-content=&quot;Username may contain only alpha numeric characters&quot;&gt;
+        &lt;input class=&quot;form-control&quot; type=&quot;password&quot; name=&quot; password&quot; value=&quot;&quot; placeholder=&quot;Your password here&quot; data-validation=&quot;^[a-zA-Z0-9]+$&quot; data-content=&quot;Password may contain only alpha numeric characters&quot;&gt;
+&lt;/form&gt;</code>                                </section>
+                                <section>
+                                        <h2>The Result</h2>
+                                        <script type="text/javascript">
+        DOMAgent.add('[data-validation]', function() {
+                var regexp = new RegExp($(this).attr('data-validation'));
+                $(this).validationAgent(regexp, function() {
+                        $(this).popover('destroy');
+                }, function() {
+                        $(this).popover('show');
+                });
+        });
+</script>
+<form>
+        <input class="form-control" type="text" name="username" value="" placeholder="Your username here" data-validation="^[a-zA-Z0-9]+$" data-content="Username may contain only alpha numeric characters">
+        <input class="form-control" type="password" name=" password" value="" placeholder="Your password here" data-validation="^[a-zA-Z0-9]+$" data-content="Password may contain only alpha numeric characters">
+</form>                                </section>
+                                <section>
+                                        <h2>Conclusions & Notes</h2>
+                                        <ul>
+                                                <li>Try to interact with the form fields, they both allow only alphanumeric chars (a-z, A-Z, 0-9).</li>
+                                                <li>Note that once the DOM Agent initialize code snippet is embedded in your js, you do not need to use anymore javascript for that end, all elements containing <code class="inline">data-validation</code> attribute gets validated.</li>
+                                        </ul>
+                                </section>
+                        </article>
                 </div>
         </div>
-</section>
-<section class="text-center">
-        <div class="container-fluid">
-                <div class="row">
-                        <div class="col-sm-6 col-md-4 advantage mobile-bottom">
-                                <div><img src="https://avivcarmis.github.io/reaction-agent/static/img/footprint.png" alt="Footprints flat design icon"></div>
-                                <h2>Small Footprint</h2>
-                                <p>One guideline in the continuous development of the framework is to not fire any piece of functionality unless it was explicitly requested to be used.</p>
-                        </div>
-                        <div class="col-sm-6 col-md-4 advantage mobile-bottom">
-                                <div><img src="https://avivcarmis.github.io/reaction-agent/static/img/no-dependency.png" alt="Women typing flat design icon"></div>
-                                <h2>No Dependency</h2>
-                                <p>Download the source code, include it on your own scripts and do whatever you like with it, without being dependant on someone else adding something you need.</p>
-                        </div>
-                        <div class="col-sm-6 col-sm-offset-3 col-md-offset-0 col-md-4 advantage mobile-bottom">
-                                <div><img src="https://avivcarmis.github.io/reaction-agent/static/img/fully-open-source.png" alt="Code flat design icon"></div>
-                                <h2>Fully Open Source</h2>
-                                <p>Ever growing and developing, anyone can contribute and add whatever they think is best!</p>
-                        </div>
-                </div>
-        </div>
-</section>
-<section>
-        <div class="container">
-                <div class="row">
-                        <div class="col-xs-12 contact">
-                                <h3>Contact Me</h3>
-                                <p>Hey guys! I’ll be more than happy to receive any kind of feedback regarding Reaction Agent framework. Additionally, if you want to contribute to the effort you are more than welcome, this feature is fully open sourced on GIT Hub - you collaborate or fork it if you like.<br>If you are using the framework let me know, you may mail me questions or send me a link and let me take a peek! (:</p>
-                                <div class="text-right"><a href="mailto:avivcarmis@gmail.com" title="Mail me...">avivcarmis@gmail.com</a></div>
-                        </div>
-                </div>
-        </div>
-</section>                </main>
+</div>                </main>
                 <footer>
                         <div class="container-fluid">
                                 <div class="row equal-height">

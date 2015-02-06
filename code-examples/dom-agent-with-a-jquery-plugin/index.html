@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta charset="utf-8">
+                <title>DOM Agent With a jQuery Plugin | Examples | REACTION AGENT</title>
+                <link rel="icon" type="image/png" href="https://avivcarmis.github.io/reaction-agent/static/img/icon.png">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <meta name="description" content="An example of how to simplify the usage of jQuery plugins with the DOM Agent">
+                <meta name="keywords" content="dom agent jquery plugin reaction agent example">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap.min.css">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap-theme.min.css">
+                <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700|Anton' rel='stylesheet' type='text/css'>
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/main.css">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/zenburn.css">
+                <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/vendor/bootstrap.min.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/reaction-agent/reaction.agent.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/vendor/highlight.pack.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/main.js" type="text/javascript"></script>
+        </head>
+        <body>
+                <header>
+                        <div class="container-fluid">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-controls="navbar">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                </button>
+                                <div class="row">
+                                        <div id="tagline" class="col-sm-5">
+                                                <a id="home-link" href="https://avivcarmis.github.io/reaction-agent/" title="Go to main page" style="float: left;">
+                                                        <div>
+                                                                <img class="logo" src="https://avivcarmis.github.io/reaction-agent/static/img/logo-small.png" alt="Reaction Agent framework logo man tearing jacket">
+                                                        </div>
+                                                        <h2 class="hidden-xs" style="padding-left: 10px;"><span class="red">reaction</span><span class="purple-light">agent</span></h2>
+                                                </a>
+                                                <a id="download-link" class="hidden-xs" href="https://github.com/avivcarmis/reaction-agent/archive/master.zip" title="Download ReactionAgent">Download v1.1</a>
+                                        </div>
+                                        <div id="navbar-wrapper" class="col-sm-7">
+                                                <nav id="navbar" class="navbar-collapse collapse">
+                                                        <ul class="nav navbar-nav navbar-right">
+                                                                <li><a href="https://avivcarmis.github.io/reaction-agent/getting-started" title="Full Documentation of ReactionAgent">Getting Started</a></li>
+                                                                <li class="active"><a href="https://avivcarmis.github.io/reaction-agent/code-examples" title="Examples and code snippents of ReactionAgent">Examples</a></li>
+                                                                <li><a href="https://avivcarmis.github.io/reaction-agent/license" title="License and info">License</a></li>
+                                                        </ul>
+                                                </nav>
+                                        </div>
+                                </div>
+                        </div>
+                </header>
+                <main><link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+<div class="container">
+        <div class="row">
+                <div class="col-xs-12">
+                        <article>
+                                <section>
+                                        <h1>DOM Agent With a jQuery Plugin</h1>
+                                        <p>To get a good understanding of how the DOM Agent could help us and make our development process simpler and more modular, let's look at a very common example of certain element that demand some Javascript operations when appear on our DOM.</p>
+                                        <p>A good example of that will be an element that we want to apply some jQuery plugin in. For example, let's take <a href="http://jqueryui.com/accordion/" title="Read full documentation and description of the plugin" target="_blank">jQuery UI Accordion plugin</a> (or similarly any other jQuery plugin that demands some initialization). First of all, let's note that the way to initialize the simplest Accordion element, we should call the <code class="inline">jQuery.accordion</code> method like so: <code class="inline">$("some-element").accordion();</code>. Next, let's we have a page with one accordion element, and a button below. Each time the button is clicked, a new accordion element is inserted to the DOM. Each time that happens, we have to initialize the element once again.</p>
+                                        <p>The solution offered by the DOM Agent, is to define a constructor function to elements, based on a selector matching. The example below, shows the page containing dynamic accordion elements, each gets initialized by its constructor the moment it gets inserted to the DOM.</p>
+                                </section>
+                                <section>
+                                        <h2>The Source Code</h2>
+                                        <code class="html">&lt;script type=&quot;text/javascript&quot;&gt;
+        function addMore() {
+                $(&quot;#accordion-container&quot;).append('&lt;div class=&quot;accordion&quot;&gt;&lt;h3&gt;Section 1&lt;/h3&gt;&lt;div&gt;&lt;p&gt;Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam.&lt;/p&gt;&lt;/div&gt;&lt;h3&gt;Section 2&lt;/h3&gt;&lt;div&gt;&lt;p&gt;Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam.&lt;/p&gt;&lt;/div&gt;&lt;h3&gt;Section 3&lt;/h3&gt;&lt;div&gt;&lt;p&gt;Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam.&lt;/p&gt;&lt;/div&gt;&lt;h3&gt;Section 4&lt;/h3&gt;&lt;div&gt;&lt;p&gt;Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;');
+        }
+&lt;/script&gt;
+&lt;div id=&quot;accordion-container&quot;&gt;
+        &lt;div class=&quot;accordion&quot;&gt;
+                &lt;h3&gt;Section 1&lt;/h3&gt;
+                &lt;div&gt;
+                        &lt;p&gt;
+                                Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+                                ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+                                amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+                                odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+                        &lt;/p&gt;
+                &lt;/div&gt;
+                &lt;h3&gt;Section 2&lt;/h3&gt;
+                &lt;div&gt;
+                        &lt;p&gt;
+                                Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+                                purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+                                velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+                                suscipit faucibus urna.
+                        &lt;/p&gt;
+                &lt;/div&gt;
+                &lt;h3&gt;Section 3&lt;/h3&gt;
+                &lt;div&gt;
+                        &lt;p&gt;
+                                Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+                                purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+                                velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+                                suscipit faucibus urna.
+                        &lt;/p&gt;
+                &lt;/div&gt;
+                &lt;h3&gt;Section 4&lt;/h3&gt;
+                &lt;div&gt;
+                        &lt;p&gt;
+                                Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+                                purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+                                velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+                                suscipit faucibus urna.
+                        &lt;/p&gt;
+                &lt;/div&gt;
+        &lt;/div&gt;
+&lt;/div&gt;
+&lt;button class=&quot;btn btn-default&quot; onclick=&quot;addMore()&quot;&gt;Add another accordion&lt;/button&gt;</code>                                        <code class="js">DOMAgent.add('.accordion', function() {
+        $(this).accordion();
+});</code>                                </section>
+                                <section>
+                                        <h2>The Result</h2>
+                                        <script type="text/javascript">
+        function addMore() {
+                $("#accordion-container").append('<div class="accordion"><h3>Section 1</h3><div><p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam.</p></div><h3>Section 2</h3><div><p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam.</p></div><h3>Section 3</h3><div><p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam.</p></div><h3>Section 4</h3><div><p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam.</p></div></div>');
+        }
+</script>
+<div id="accordion-container">
+        <div class="accordion">
+                <h3>Section 1</h3>
+                <div>
+                        <p>
+                                Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+                                ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+                                amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+                                odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+                        </p>
+                </div>
+                <h3>Section 2</h3>
+                <div>
+                        <p>
+                                Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+                                purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+                                velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+                                suscipit faucibus urna.
+                        </p>
+                </div>
+                <h3>Section 3</h3>
+                <div>
+                        <p>
+                                Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+                                purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+                                velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+                                suscipit faucibus urna.
+                        </p>
+                </div>
+                <h3>Section 4</h3>
+                <div>
+                        <p>
+                                Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+                                purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+                                velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+                                suscipit faucibus urna.
+                        </p>
+                </div>
+        </div>
+</div>
+<button class="btn btn-default" onclick="addMore()">Add another accordion</button>                                        <script type="text/javascript">DOMAgent.add('.accordion', function() {
+        $(this).accordion();
+});</script>
+                                </section>
+                                <section>
+                                        <h2>Conclusions & Notes</h2>
+                                        <ul>
+                                                <li>First of all note that the use of jQuery UI or the use of the accordion plugin are merely an example, this would give you a good modularity and control over your code in any case you want to run some initialization to your DOM elements and you dynamically insert them in.</li>
+                                                <li>Note that when elements are inserted to the dom, they do not require any special treatment but automatically gets initialized.</li>
+                                                <li>Note that the DOM Agent also runs once on <code class="inline">document.ready</code> event, so it also initialize element that appear in the dom to begin with.</li>
+                                        </ul>
+                                </section>
+                        </article>
+                </div>
+        </div>
+</div>                </main>
+                <footer>
+                        <div class="container-fluid">
+                                <div class="row equal-height">
+                                        <div class="col-sm-4 col-md-3 col-lg-2 mobile-bottom">
+                                                <h2><span class="red">reaction</span><span class="purple-light">agent</span></h2>
+                                                <p class="grey">
+                                                        A powerful light weight javascript
+                                                        framework to easily manage and track
+                                                        DOM Changes, keyboard and page
+                                                        scroll events.
+                                                </p>
+                                        </div>
+                                        <div class="col-sm-8 col-md-9 col-lg-10 text-right" style="vertical-align: middle;">
+                                                Hey guys! You are more than welcome to contact me regarding Reaction Agent framework at <a href="mailto:avivcarmis@gmail.com" title="Mail me...">avivcarmis@gmail.com</a>
+                                        </div>
+                                </div>
+                        </div>
+                </footer>
+        </body>
+</html>

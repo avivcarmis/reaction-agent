@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta charset="utf-8">
+                <title>The Keypress Agent | Getting Started | REACTION AGENT</title>
+                <link rel="icon" type="image/png" href="https://avivcarmis.github.io/reaction-agent/static/img/icon.png">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <meta name="description" content="Full documentation of the Keypress Agent module">
+                <meta name="keywords" content="keypress agent reaction agent">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap.min.css">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap-theme.min.css">
+                <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700|Anton' rel='stylesheet' type='text/css'>
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/main.css">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/zenburn.css">
+                <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/vendor/bootstrap.min.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/reaction-agent/reaction.agent.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/vendor/highlight.pack.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/main.js" type="text/javascript"></script>
+        </head>
+        <body>
+                <header>
+                        <div class="container-fluid">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-controls="navbar">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                </button>
+                                <div class="row">
+                                        <div id="tagline" class="col-sm-5">
+                                                <a id="home-link" href="https://avivcarmis.github.io/reaction-agent/" title="Go to main page" style="float: left;">
+                                                        <div>
+                                                                <img class="logo" src="https://avivcarmis.github.io/reaction-agent/static/img/logo-small.png" alt="Reaction Agent framework logo man tearing jacket">
+                                                        </div>
+                                                        <h2 class="hidden-xs" style="padding-left: 10px;"><span class="red">reaction</span><span class="purple-light">agent</span></h2>
+                                                </a>
+                                                <a id="download-link" class="hidden-xs" href="https://github.com/avivcarmis/reaction-agent/archive/master.zip" title="Download ReactionAgent">Download v1.1</a>
+                                        </div>
+                                        <div id="navbar-wrapper" class="col-sm-7">
+                                                <nav id="navbar" class="navbar-collapse collapse">
+                                                        <ul class="nav navbar-nav navbar-right">
+                                                                <li class="active"><a href="https://avivcarmis.github.io/reaction-agent/getting-started" title="Full Documentation of ReactionAgent">Getting Started</a></li>
+                                                                <li><a href="https://avivcarmis.github.io/reaction-agent/code-examples" title="Examples and code snippents of ReactionAgent">Examples</a></li>
+                                                                <li><a href="https://avivcarmis.github.io/reaction-agent/license" title="License and info">License</a></li>
+                                                        </ul>
+                                                </nav>
+                                        </div>
+                                </div>
+                        </div>
+                </header>
+                <main><div class="container">
+        <div class="row">
+                <div class="col-sm-9">
+                        <article>
+                                <section class="anchor" id="what">
+                                        <h1>The Keypress Agent</h1>
+                                        <p>The keypress agent becomes extremely helpful when developing a web application that enables the user interaction via keyboard, i.e. hot keys. The issues start when some features of your app add keyboard action that overlap with others.</p>
+                                        <p>For example, let's consider that we have a main screen that should output an alert message once we click the enter key. This is no problem, we can do it with <code class="inline">document.keypress</code> handler. Next, we add a modal screen (in-window popup) that prompts the user some yes-no question. Now if we want the enter key to apply the 'yes' option of the modal, we should first cancel the old <code class="inline">document.keypress</code> handler, and then add a new one. Once the modal is closed we should revert it.</p>
+                                        <p>The KeypressAgent introduces a new way of managing these event types in web applications called layering.</p>
+                                </section>
+                                <section class="anchor" id="layering">
+                                        <h2>Layering</h2>
+                                        <p>The KeypressAgent assumes that in every moment there is one active screen the user interacts with. When a new feature will be introduces (let's say, a modal window), it will generate a new <b>keypress layer</b> and define its behavior. Then, the Agent neutralizes the activity of older <b>keypress layer</b>, and automatically lets the user interact with the currently active one.</p>
+                                </section>
+                                <section class="anchor" id="api">
+                                        <h2>The API</h2>
+                                        <section class="anchor" id="create-layer">
+        <h6>Create Layer</h6>
+        <code>KeypressAgent.createLayer();</code>
+                <h6>What?</h6>
+        <p>Creates a new keypress layer.</p>
+                        <h6>Returns?</h6>
+                <p>The newly created keypress layer object.</p>
+                                                </section>                                        <section class="anchor" id="add">
+        <h6>Add</h6>
+        <code>keypressLayerInstance.addKey(key, handler, [combinations]);</code>
+                <h6>What?</h6>
+        <p>Adds a new functionality to the layer by specifying the target key, a handler function for such an event and optionally require ctrl, alt and shift keys.</p>
+                        <h6>Returns?</h6>
+                <p>The method returns the keypress layer instance to enable method chaining.</p>
+                                <div class="table-responsive">
+                        <table class="table table-hover table-striped table-bordered">
+                                <thead>
+                                        <tr>
+                                                <th>Parameter Name</th>
+                                                <th>Expected Type</th>
+                                                <th>Default Value</th>
+                                                <th>Description</th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                         
+                                        <tr>
+                                                <td>key</td>
+                                                <td>Char (String) / Integer</td>
+                                                <td></td>
+                                                <td>The keyboard key code to trigger the event in one of three possible ways:<ul><li>A string value containing a single english caracter from the keyboard (e.g.: 'a').</li><li>A key keyCode value. This method is to be used when targeting a key that is not alphabet (e.g. Insert key or Backspace key).<br><span class="label label-warning">Note:</span> don't tear yourself out! you may use the <code class="inline">KeypressAgent.mapToConsole()</code> function as specified below, to extract your desired key codes.</li><li>One of the following: 'ctrl', 'alt' or 'shift'.</li></ul></td>
+                                        </tr>
+                                         
+                                        <tr>
+                                                <td>handler</td>
+                                                <td>Function</td>
+                                                <td></td>
+                                                <td>A handler function to be executed for such an event</td>
+                                        </tr>
+                                         
+                                        <tr>
+                                                <td>combinations</td>
+                                                <td>Object</td>
+                                                <td><code>{
+ctrl: false,
+alt: false,
+shift: false
+}</code></td>
+                                                <td>An object to enable requiring of key combinations with Ctrl, Alt and Shift keys</td>
+                                        </tr>
+                                                                        </tbody>
+                        </table>
+                </div>
+                                                <h6>Example?</h6>
+                <code class="js">var keypressLayer = KeypressAgent.createLayer();
+keypressLayer.add('a', function() {
+	alert('a key was pressed');
+});
+keypressLayer.add(25, function() {
+	alert('ctrl+enter combination was pressed');
+}, {ctrl: true});
+keypressLayer.add('alt', function() {
+	alert('alt key was pressed');
+});
+// now an alert message gets triggered when pressing 'a', ctrl+enter and alt keys
+
+// since method chaining is supported, this produces the same result:
+var keypressLayer = KeypressAgent.createLayer();
+keypressLayer
+        .add('a', function() {
+                alert('a key was pressed');
+        })
+        .add(25, function() {
+                alert('ctrl+enter combination was pressed');
+        }, {ctrl: true})
+        .add('alt', function() {
+                alert('alt key was pressed');
+        });</code>                </section>                                        <section class="anchor" id="destroy-layer">
+        <h6>Destroy Layer</h6>
+        <code>keypressLayerInstance.destroy();</code>
+                <h6>What?</h6>
+        <p>Removes the layer from the Agent.<br><span class="label label-danger">Important Note</span> The layer doesn't have to be the currently active layer. For clarification, you can have a main screen, then an image gallery gets open, and then, let's say that a modal window gets open, each one creates its own layer. Now suppose that the gallery gets closed by some function that got triggered in the modal. So, the gallery close function will call the remove layer function and supply it with the gallery layer usage key. Then, when the modal window will be closed and its layer will be removed, the active layer will be the main screens again.</p>
+                                                        <h6>Example?</h6>
+                <code class="js">// nothing happens when pressing 'a' right now
+var layer = KeypressAgent.createLayer();
+layer.add('a', function() {
+	alert('a key was pressed');
+});
+// now alert gets triggered when pressing the 'a' key
+layer.destroy();
+// nothing happens when pressing 'a' right now</code>                </section>                                        <section class="anchor" id="map-to-console">
+        <h6>Map To Console</h6>
+        <code>KeypressAgent.mapToConsole();</code>
+                <h6>What?</h6>
+        <p>Log to browser console the key code for every <code class="inline">document.keypress</code> event. Used as a tool to finding the key codes of the event you are about to create.<br><span class="label label-danger">Important Note</span> This function should only be used for development.</p>
+                                                </section>                                </section>
+                        </article>
+                </div>
+                <div class="col-sm-3 hidden-xs sidenav-wrapper">
+                        <ul class="nav sidenav">
+                        <li><a href="#what">What Does It Do?</a></li>
+                                        <li><a href="#layering">Layering</a></li>
+                                        <li><a href="#api">The API</a></li>
+                                        <li>
+                                <ul class="nav">
+                                                                                        <li><a href="#create-layer">Create Layer</a></li>
+                                                                                        <li><a href="#add-key">Add Key</a></li>
+                                                                                        <li><a href="#add-combination">Add Combination</a></li>
+                                                                                        <li><a href="#destroy-layer">Destroy Layer</a></li>
+                                                                                        <li><a href="#map-to-console">Map To Console</a></li>
+                                                                        </ul>
+                        </li>
+                        </ul>                  </div>
+        </div>
+</div>                </main>
+                <footer>
+                        <div class="container-fluid">
+                                <div class="row equal-height">
+                                        <div class="col-sm-4 col-md-3 col-lg-2 mobile-bottom">
+                                                <h2><span class="red">reaction</span><span class="purple-light">agent</span></h2>
+                                                <p class="grey">
+                                                        A powerful light weight javascript
+                                                        framework to easily manage and track
+                                                        DOM Changes, keyboard and page
+                                                        scroll events.
+                                                </p>
+                                        </div>
+                                        <div class="col-sm-8 col-md-9 col-lg-10 text-right" style="vertical-align: middle;">
+                                                Hey guys! You are more than welcome to contact me regarding Reaction Agent framework at <a href="mailto:avivcarmis@gmail.com" title="Mail me...">avivcarmis@gmail.com</a>
+                                        </div>
+                                </div>
+                        </div>
+                </footer>
+        </body>
+</html>

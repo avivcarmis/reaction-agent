@@ -2,11 +2,11 @@
 <html lang="en">
         <head>
                 <meta charset="utf-8">
-                <title>REACTION AGENT | Javascript Development Utilities Framework</title>
+                <title>Scroll Agent Breakpoints | Examples | REACTION AGENT</title>
                 <link rel="icon" type="image/png" href="https://avivcarmis.github.io/reaction-agent/static/img/icon.png">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <meta name="description" content="Reaction Agent is a powerful light weight javascript framework to easily manage and track DOM Changes, keyboard and page scroll events">
-                <meta name="keywords" content="reaction agent javascript framework developer scroll keypress">
+                <meta name="description" content="An example of how to simplify the usage of jQuery plugins with the DOM Agent">
+                <meta name="keywords" content="scroll agent breakpoints reaction agent example">
                 <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap.min.css">
                 <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap-theme.min.css">
                 <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700|Anton' rel='stylesheet' type='text/css'>
@@ -29,7 +29,7 @@
                                 </button>
                                 <div class="row">
                                         <div id="tagline" class="col-sm-5">
-                                                <a class="active" id="home-link" href="https://avivcarmis.github.io/reaction-agent/" title="Go to main page" style="float: left;">
+                                                <a id="home-link" href="https://avivcarmis.github.io/reaction-agent/" title="Go to main page" style="float: left;">
                                                         <div>
                                                                 <img class="logo" src="https://avivcarmis.github.io/reaction-agent/static/img/logo-small.png" alt="Reaction Agent framework logo man tearing jacket">
                                                         </div>
@@ -41,7 +41,7 @@
                                                 <nav id="navbar" class="navbar-collapse collapse">
                                                         <ul class="nav navbar-nav navbar-right">
                                                                 <li><a href="https://avivcarmis.github.io/reaction-agent/getting-started" title="Full Documentation of ReactionAgent">Getting Started</a></li>
-                                                                <li><a href="https://avivcarmis.github.io/reaction-agent/code-examples" title="Examples and code snippents of ReactionAgent">Examples</a></li>
+                                                                <li class="active"><a href="https://avivcarmis.github.io/reaction-agent/code-examples" title="Examples and code snippents of ReactionAgent">Examples</a></li>
                                                                 <li><a href="https://avivcarmis.github.io/reaction-agent/license" title="License and info">License</a></li>
                                                         </ul>
                                                 </nav>
@@ -49,60 +49,104 @@
                                 </div>
                         </div>
                 </header>
-                <main><section class="text-center">
-        <img style="max-width: 90%;" src="https://avivcarmis.github.io/reaction-agent/static/img/logo.png" alt="Reaction Agent - Javascript Developer Utilities Framework">
-</section>
-<section class="text-center">
-        <div class="container">
-                <div class="row">
-                        <div class="col-xs-12">
-                                <p class="lead">A powerful light weight javascript framework to easily manage and track DOM Changes, keyboard and page scroll events...and more!</p>
-                                <div>
-                                        <h3 style="margin-top: 30px;"><a href="https://github.com/avivcarmis/reaction-agent/archive/master.zip" title="Download ReactionAgent">Download v1.1</a></h3>
-                                </div>
-                                <hr>
-                                <h3>
-                                        <a class="mobile-bottom mobile-block" href="https://avivcarmis.github.io/reaction-agent/getting-started" title="">Getting Started</a>
-                                        <span class="hidden-xs"> ; </span>
-                                        <span class="text visible-xs-block mobile-bottom">or</span>
-                                        <a href="https://github.com/avivcarmis/reaction-agent/" title="Go to the project page to Git Hub">View On GibHub</a>
-                                </h3>
-                        </div>
+                <main><div class="container">
+        <div class="row">
+                <div class="col-xs-12">
+                        <article>
+                                <section>
+                                        <h1>Scroll Agent Breakpoints Example</h1>
+                                        <p>The Scroll Agent breakpoints are a simple mechanism. It is built on the idea of triggering handlers whenever a certain point is reached by the window scroll top value.</p>
+                                        <p>The example below demonstrates a few different ways of registering breakpoints, varying from explicit value, dynamic function, and element reached.</p>
+                                </section>
+                                <section>
+                                        <h2>The Source Code</h2>
+                                        <code class="html">&lt;script type=&quot;text/javascript&quot;&gt;
+        var sa = new ScrollAgent();
+        sa.add(0, function() {
+                $(&quot;#monitor&quot;).html(0);
+        });
+        sa.add(100, function() {
+                $(&quot;#monitor&quot;).html(100);
+        });
+        sa.add(function() {
+                return $(window).height();
+        }, function() {
+                $(&quot;#monitor&quot;).html('window');
+        });
+        sa.add(&quot;#example&quot;, function() {
+                $(&quot;#monitor&quot;).html('element');
+        });
+&lt;/script&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;div id=&quot;example&quot; style=&quot;height: 40px; background: red;&quot;&gt;Element&lt;/div&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+&lt;div id=&quot;monitor&quot; style=&quot;position: fixed; bottom: 20px; right: 20px; height: 70px; line-height: 70px; width: 70px; text-align: center; background: rgba(0,0,0,.4); color: white;&quot;&gt;&lt;/div&gt;</code>                                </section>
+                                <section>
+                                        <h2>The Result</h2>
+                                        <script type="text/javascript">
+        var sa = new ScrollAgent();
+        sa.add(0, function() {
+                $("#monitor").html(0);
+        });
+        sa.add(100, function() {
+                $("#monitor").html(100);
+        });
+        sa.add(function() {
+                return $(window).height();
+        }, function() {
+                $("#monitor").html('window');
+        });
+        sa.add("#example", function() {
+                $("#monitor").html('element');
+        });
+</script>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<div id="example" style="height: 40px; background: red;">Element</div>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<div id="monitor" style="position: fixed; bottom: 20px; right: 20px; height: 70px; line-height: 70px; width: 70px; text-align: center; background: rgba(0,0,0,.4); color: white;"></div>                                </section>
+                                <section>
+                                        <h2>Conclusions & Notes</h2>
+                                        <ul>
+                                                <li>Note that the monitor element on the bottom right changes its value according to the active breakpoint.</li>
+                                                <li>Note that the order in which the breakpoints were inserted does not matter.</li>
+                                        </ul>
+                                </section>
+                        </article>
                 </div>
         </div>
-</section>
-<section class="text-center">
-        <div class="container-fluid">
-                <div class="row">
-                        <div class="col-sm-6 col-md-4 advantage mobile-bottom">
-                                <div><img src="https://avivcarmis.github.io/reaction-agent/static/img/footprint.png" alt="Footprints flat design icon"></div>
-                                <h2>Small Footprint</h2>
-                                <p>One guideline in the continuous development of the framework is to not fire any piece of functionality unless it was explicitly requested to be used.</p>
-                        </div>
-                        <div class="col-sm-6 col-md-4 advantage mobile-bottom">
-                                <div><img src="https://avivcarmis.github.io/reaction-agent/static/img/no-dependency.png" alt="Women typing flat design icon"></div>
-                                <h2>No Dependency</h2>
-                                <p>Download the source code, include it on your own scripts and do whatever you like with it, without being dependant on someone else adding something you need.</p>
-                        </div>
-                        <div class="col-sm-6 col-sm-offset-3 col-md-offset-0 col-md-4 advantage mobile-bottom">
-                                <div><img src="https://avivcarmis.github.io/reaction-agent/static/img/fully-open-source.png" alt="Code flat design icon"></div>
-                                <h2>Fully Open Source</h2>
-                                <p>Ever growing and developing, anyone can contribute and add whatever they think is best!</p>
-                        </div>
-                </div>
-        </div>
-</section>
-<section>
-        <div class="container">
-                <div class="row">
-                        <div class="col-xs-12 contact">
-                                <h3>Contact Me</h3>
-                                <p>Hey guys! I’ll be more than happy to receive any kind of feedback regarding Reaction Agent framework. Additionally, if you want to contribute to the effort you are more than welcome, this feature is fully open sourced on GIT Hub - you collaborate or fork it if you like.<br>If you are using the framework let me know, you may mail me questions or send me a link and let me take a peek! (:</p>
-                                <div class="text-right"><a href="mailto:avivcarmis@gmail.com" title="Mail me...">avivcarmis@gmail.com</a></div>
-                        </div>
-                </div>
-        </div>
-</section>                </main>
+</div>                </main>
                 <footer>
                         <div class="container-fluid">
                                 <div class="row equal-height">

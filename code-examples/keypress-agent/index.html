@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta charset="utf-8">
+                <title>Keypress Agent Usage | Examples | REACTION AGENT</title>
+                <link rel="icon" type="image/png" href="https://avivcarmis.github.io/reaction-agent/static/img/icon.png">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <meta name="description" content="A basic example of how to use the Keypress Agent">
+                <meta name="keywords" content="keypress keydown keyup keyboard events js javascript agent reaction agent example">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap.min.css">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap-theme.min.css">
+                <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700|Anton' rel='stylesheet' type='text/css'>
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/main.css">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/zenburn.css">
+                <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/vendor/bootstrap.min.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/reaction-agent/reaction.agent.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/vendor/highlight.pack.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/main.js" type="text/javascript"></script>
+        </head>
+        <body>
+                <header>
+                        <div class="container-fluid">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-controls="navbar">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                </button>
+                                <div class="row">
+                                        <div id="tagline" class="col-sm-5">
+                                                <a id="home-link" href="https://avivcarmis.github.io/reaction-agent/" title="Go to main page" style="float: left;">
+                                                        <div>
+                                                                <img class="logo" src="https://avivcarmis.github.io/reaction-agent/static/img/logo-small.png" alt="Reaction Agent framework logo man tearing jacket">
+                                                        </div>
+                                                        <h2 class="hidden-xs" style="padding-left: 10px;"><span class="red">reaction</span><span class="purple-light">agent</span></h2>
+                                                </a>
+                                                <a id="download-link" class="hidden-xs" href="https://github.com/avivcarmis/reaction-agent/archive/master.zip" title="Download ReactionAgent">Download v1.1</a>
+                                        </div>
+                                        <div id="navbar-wrapper" class="col-sm-7">
+                                                <nav id="navbar" class="navbar-collapse collapse">
+                                                        <ul class="nav navbar-nav navbar-right">
+                                                                <li><a href="https://avivcarmis.github.io/reaction-agent/getting-started" title="Full Documentation of ReactionAgent">Getting Started</a></li>
+                                                                <li class="active"><a href="https://avivcarmis.github.io/reaction-agent/code-examples" title="Examples and code snippents of ReactionAgent">Examples</a></li>
+                                                                <li><a href="https://avivcarmis.github.io/reaction-agent/license" title="License and info">License</a></li>
+                                                        </ul>
+                                                </nav>
+                                        </div>
+                                </div>
+                        </div>
+                </header>
+                <main><div class="container">
+        <div class="row">
+                <div class="col-xs-12">
+                        <article>
+                                <section>
+                                        <h1>KeypressAgent Example</h1>
+                                        <p>The Keypress Agent is a simple module to control and manage key triggers and hot key shortcuts for web application under the concept of layering. This example demonstrates the idea behind layering and the simplicity of using the keypress agent.</p>
+                                </section>
+                                <section>
+                                        <h2>The Source Code</h2>
+                                        <code class="html">&lt;script type=&quot;text/javascript&quot;&gt;
+        var mainScreenLayer = KeypressAgent.createLayer();
+        mainScreenLayer
+                .add(13, function() {
+                        alert('Main screen enter key pressed');
+                })
+                .add('a', function() {
+                        alert('Main screen key combination pressed');
+                }, {ctrl: true});
+        var secondaryScreenLayer;
+        function openSecondaryScreen() {
+                secondaryScreenLayer = KeypressAgent.createLayer();
+                secondaryScreenLayer
+                        .add(115, function() {
+                                alert('Secondary screen F4 key pressed');
+                        })
+                        .add('z', function() {
+                                alert('Secondary screen key combination pressed');
+                        }, {ctrl: true, alt: true});
+                $(&quot;#secondary-screen&quot;).show();
+        }
+        function closeSecondaryScreen() {
+                secondaryScreenLayer.destroy();
+                $(&quot;#secondary-screen&quot;).hide();
+        }
+&lt;/script&gt;
+&lt;div class=&quot;radius&quot; id=&quot;main-screen&quot; style=&quot;padding: 20px; background: #ddd;&quot;&gt;
+        &lt;h4&gt;Main Screen&lt;/h4&gt;
+        &lt;p&gt;This is the main screen of our example web application. It reacts to the following keypress events:&lt;/p&gt;
+        &lt;ul&gt;
+                &lt;li&gt;&lt;code class=&quot;inline&quot;&gt;enter&lt;/code&gt; - alerts 'Main screen enter key pressed' message&lt;/li&gt;
+                &lt;li&gt;&lt;code class=&quot;inline&quot;&gt;ctrl+a&lt;/code&gt; - alerts 'Main screen key combination pressed' message&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;p&gt;Once tried to interact with the screen keypress options, open the next screen by clicking the button below:&lt;/p&gt;
+        &lt;button class=&quot;btn btn-primary&quot; onclick=&quot;openSecondaryScreen()&quot;&gt;Open Next Screen&lt;/button&gt;
+&lt;/div&gt;
+&lt;div id=&quot;secondary-screen&quot; style=&quot;display: none; background: black; background: rgba(0,0,0,.92); position: fixed; top: 0; bottom: 0; right: 0; left: 0; width: 100%; height: 100%; padding: 30px; color: white; z-index: 99999999;&quot;&gt;
+        &lt;h4&gt;Secondary Screen&lt;/h4&gt;
+        &lt;p&gt;This is a secondary screen of our example web application. Note that once it is open, the entire keypress functionality of the main screen is disabled.&lt;/p&gt;
+        &lt;ul&gt;
+                &lt;li&gt;&lt;code class=&quot;inline&quot;&gt;F4&lt;/code&gt; - alerts 'Secondary screen F4 key pressed' message&lt;/li&gt;
+                &lt;li&gt;&lt;code class=&quot;inline&quot;&gt;ctrl+alt+z&lt;/code&gt; - alerts 'Secondary screen key combination pressed' message&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;p&gt;Once tried to interact with this screen, close it and return to the main screen by clicking the button below. Note that once the secondary screen is closed, the main screen keypress functionality is enabled again&lt;/p&gt;
+        &lt;button class=&quot;btn btn-primary&quot; onclick=&quot;closeSecondaryScreen()&quot;&gt;Close Secondary Screen&lt;/button&gt;
+&lt;/div&gt;</code>                                </section>
+                                <section>
+                                        <h2>The Result</h2>
+                                        <script type="text/javascript">
+        var mainScreenLayer = KeypressAgent.createLayer();
+        mainScreenLayer
+                .add(13, function() {
+                        alert('Main screen enter key pressed');
+                })
+                .add('a', function() {
+                        alert('Main screen key combination pressed');
+                }, {ctrl: true});
+        var secondaryScreenLayer;
+        function openSecondaryScreen() {
+                secondaryScreenLayer = KeypressAgent.createLayer();
+                secondaryScreenLayer
+                        .add(115, function() {
+                                alert('Secondary screen F4 key pressed');
+                        })
+                        .add('z', function() {
+                                alert('Secondary screen key combination pressed');
+                        }, {ctrl: true, alt: true});
+                $("#secondary-screen").show();
+        }
+        function closeSecondaryScreen() {
+                secondaryScreenLayer.destroy();
+                $("#secondary-screen").hide();
+        }
+</script>
+<div class="radius" id="main-screen" style="padding: 20px; background: #ddd;">
+        <h4>Main Screen</h4>
+        <p>This is the main screen of our example web application. It reacts to the following keypress events:</p>
+        <ul>
+                <li><code class="inline">enter</code> - alerts 'Main screen enter key pressed' message</li>
+                <li><code class="inline">ctrl+a</code> - alerts 'Main screen key combination pressed' message</li>
+        </ul>
+        <p>Once tried to interact with the screen keypress options, open the next screen by clicking the button below:</p>
+        <button class="btn btn-primary" onclick="openSecondaryScreen()">Open Next Screen</button>
+</div>
+<div id="secondary-screen" style="display: none; background: black; background: rgba(0,0,0,.92); position: fixed; top: 0; bottom: 0; right: 0; left: 0; width: 100%; height: 100%; padding: 30px; color: white; z-index: 99999999;">
+        <h4>Secondary Screen</h4>
+        <p>This is a secondary screen of our example web application. Note that once it is open, the entire keypress functionality of the main screen is disabled.</p>
+        <ul>
+                <li><code class="inline">F4</code> - alerts 'Secondary screen F4 key pressed' message</li>
+                <li><code class="inline">ctrl+alt+z</code> - alerts 'Secondary screen key combination pressed' message</li>
+        </ul>
+        <p>Once tried to interact with this screen, close it and return to the main screen by clicking the button below. Note that once the secondary screen is closed, the main screen keypress functionality is enabled again</p>
+        <button class="btn btn-primary" onclick="closeSecondaryScreen()">Close Secondary Screen</button>
+</div>                                </section>
+                        </article>
+                </div>
+        </div>
+</div>                </main>
+                <footer>
+                        <div class="container-fluid">
+                                <div class="row equal-height">
+                                        <div class="col-sm-4 col-md-3 col-lg-2 mobile-bottom">
+                                                <h2><span class="red">reaction</span><span class="purple-light">agent</span></h2>
+                                                <p class="grey">
+                                                        A powerful light weight javascript
+                                                        framework to easily manage and track
+                                                        DOM Changes, keyboard and page
+                                                        scroll events.
+                                                </p>
+                                        </div>
+                                        <div class="col-sm-8 col-md-9 col-lg-10 text-right" style="vertical-align: middle;">
+                                                Hey guys! You are more than welcome to contact me regarding Reaction Agent framework at <a href="mailto:avivcarmis@gmail.com" title="Mail me...">avivcarmis@gmail.com</a>
+                                        </div>
+                                </div>
+                        </div>
+                </footer>
+        </body>
+</html>

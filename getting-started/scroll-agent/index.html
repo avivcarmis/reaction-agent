@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta charset="utf-8">
+                <title>The Scroll Agent | Getting Started | REACTION AGENT</title>
+                <link rel="icon" type="image/png" href="https://avivcarmis.github.io/reaction-agent/static/img/icon.png">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <meta name="description" content="Full documentation of the Scroll Agent module">
+                <meta name="keywords" content="scroll agent reaction agent">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap.min.css">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap-theme.min.css">
+                <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700|Anton' rel='stylesheet' type='text/css'>
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/main.css">
+                <link rel="stylesheet" href="https://avivcarmis.github.io/reaction-agent/static/css/vendor/zenburn.css">
+                <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/vendor/bootstrap.min.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/reaction-agent/reaction.agent.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/vendor/highlight.pack.js" type="text/javascript"></script>
+                <script src="https://avivcarmis.github.io/reaction-agent/static/js/main.js" type="text/javascript"></script>
+        </head>
+        <body>
+                <header>
+                        <div class="container-fluid">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-controls="navbar">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                </button>
+                                <div class="row">
+                                        <div id="tagline" class="col-sm-5">
+                                                <a id="home-link" href="https://avivcarmis.github.io/reaction-agent/" title="Go to main page" style="float: left;">
+                                                        <div>
+                                                                <img class="logo" src="https://avivcarmis.github.io/reaction-agent/static/img/logo-small.png" alt="Reaction Agent framework logo man tearing jacket">
+                                                        </div>
+                                                        <h2 class="hidden-xs" style="padding-left: 10px;"><span class="red">reaction</span><span class="purple-light">agent</span></h2>
+                                                </a>
+                                                <a id="download-link" class="hidden-xs" href="https://github.com/avivcarmis/reaction-agent/archive/master.zip" title="Download ReactionAgent">Download v1.1</a>
+                                        </div>
+                                        <div id="navbar-wrapper" class="col-sm-7">
+                                                <nav id="navbar" class="navbar-collapse collapse">
+                                                        <ul class="nav navbar-nav navbar-right">
+                                                                <li class="active"><a href="https://avivcarmis.github.io/reaction-agent/getting-started" title="Full Documentation of ReactionAgent">Getting Started</a></li>
+                                                                <li><a href="https://avivcarmis.github.io/reaction-agent/code-examples" title="Examples and code snippents of ReactionAgent">Examples</a></li>
+                                                                <li><a href="https://avivcarmis.github.io/reaction-agent/license" title="License and info">License</a></li>
+                                                        </ul>
+                                                </nav>
+                                        </div>
+                                </div>
+                        </div>
+                </header>
+                <main><div class="container">
+        <div class="row">
+                <div class="col-sm-9">
+                        <article>
+                                <section class="anchor" id="what">
+                                        <h1>The Scroll Agent</h1>
+                                        <p>The Scroll Agent module was designed to easily control the scrolling events of your page. The agent is based on two basic mechanisms, the first of which are the <code class="inline">scrollup</code> and <code class="inline">scrolldown</code> events for detecting page scroll upwards and downwards respectively.</p>
+                                        <p>The second mechanism uses a concept of scrolling breakpoint, in which every breakpoint holds a <code class="inline">ScrollTop</code> value and a handler function to be triggered when window scroll value reached the <code class="inline">ScrollTop</code> value of the breakpoint.</p>
+                                </section>
+                                <section class="anchor" id="basic-example">
+                                        <h2>Let's Make It Simple!</h2>
+                                        <p>This page is a good example of the operation of the ScrollAgent! If your'e viewing this page from your desktop, laptop or tablet, look at the affix menu on the right side - now scroll up and down and see that the purple indicator changes it's state - moving from one item to another, depending on the current location of the window scroll value. but! wait a minute. If you scroll the page all the way up, and then scroll it a bit down, you'll see another thing happen, the header of the page gets minimized. Note that these are two different tasks, each creates it's own instance of the ScrollAgent, and then supply it with information about how to react and to what breakpoints in the page.</p>
+                                        <p>
+                                                First of all, in order to create an instance of the ScrollAgent we must call it's constructor like this for example:
+                                                <code class="js">var scrollAgentInstance = new ScrollAgent();</code>
+                                                Then, the <code class="inline">scrollAgentInstance</code> variable is an instance of the ScrollAgent and we can use the ScrollAgent API as detailed below.
+                                        </p>
+                                </section>
+                                <section class="anchor" id="api">
+                                        <h2>The API</h2>
+                                        <section class="anchor" id="add">
+        <h6>Add</h6>
+        <code>scrollAgentInstance.add(test, handler, [offset = 0]);</code>
+                <h6>What?</h6>
+        <p>Adds a new breakpoint to the agent.</p>
+                        <h6>Returns?</h6>
+                <p>A breakpoint usage key to be used to remove the breakpoint later.</p>
+                                <div class="table-responsive">
+                        <table class="table table-hover table-striped table-bordered">
+                                <thead>
+                                        <tr>
+                                                <th>Parameter Name</th>
+                                                <th>Expected Type</th>
+                                                <th>Default Value</th>
+                                                <th>Description</th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                         
+                                        <tr>
+                                                <td>test</td>
+                                                <td>Number / String / Function / Object</td>
+                                                <td></td>
+                                                <td>A test to determine the <code class="inline">ScrollTop</code> value of the breakpoint. Can either be a number to set a fixed <code class="inline">ScrollTop</code> value, a function to dynamically return a <code class="inline">ScrollTop</code> value, or a string / object to identify a certain element and responsively determine the <code class="inline">ScrollTop</code> value to be the element top position. In the last case a string is used as a selector and object will either be a DOM element or a jQuery object</td>
+                                        </tr>
+                                         
+                                        <tr>
+                                                <td>handler</td>
+                                                <td>Function</td>
+                                                <td></td>
+                                                <td>The handler function to be triggered when the breakpoint is activated</td>
+                                        </tr>
+                                         
+                                        <tr>
+                                                <td>offset</td>
+                                                <td>Number</td>
+                                                <td><code>0</code></td>
+                                                <td>When defining the test with an element, the offset parameter can be used to add or subtract a certain offset from the breakpoint <code class="inline">ScrollTop</code> value. E.g. when the breakpoing starts at the element below the header, but we want to to start 20px after</td>
+                                        </tr>
+                                                                        </tbody>
+                        </table>
+                </div>
+                                                <h6>Example?</h6>
+                <code class="js">// Creating a ScrollAgent instance
+var sa = new ScrollAgent();
+// adding a breakpoint to the top of the screen
+sa.add(0, function() {
+	$('some-element').someAction();
+});
+// adding a breakpoint with a dynamic function
+sa.add(function() {
+	return $(window).height() // responsively set the breakpoint value to bethe height of the window
+}, function() {
+	$('some-element').someAction();
+});
+// adding a breakpoint with a string selector and a function name
+function doSomethingCool() {
+	$('some-element').someAction();
+}
+sa.add("footer", doSomethingCool); // will trigger doSomethingCool function when the footer top reaches the top of the window
+// adding a breakpoint with a jQuery object, a function name and an offset
+sa.add($("footer"), doSomethingCool, 100); // will trigger doSomethingCool function when the top of the window reaches 100 pixels below the footer top</code>                </section>                                        <section class="anchor" id="remove">
+        <h6>Remove</h6>
+        <code>scrollAgentInstance.remove(usageKey);</code>
+                <h6>What?</h6>
+        <p>Removes a breakpoint from the agent.</p>
+                        <h6>Returns?</h6>
+                <p>True upon success or false in case the breakpoint wasn't found.</p>
+                                <div class="table-responsive">
+                        <table class="table table-hover table-striped table-bordered">
+                                <thead>
+                                        <tr>
+                                                <th>Parameter Name</th>
+                                                <th>Expected Type</th>
+                                                <th>Default Value</th>
+                                                <th>Description</th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                         
+                                        <tr>
+                                                <td>usageKey</td>
+                                                <td>Number</td>
+                                                <td></td>
+                                                <td>The usage key of the breakpoint to be removed</td>
+                                        </tr>
+                                                                        </tbody>
+                        </table>
+                </div>
+                                        </section>                                </section>
+                                <section class="anchor" id="events">
+                                        <h2>Events</h2>
+                                        <p>To activate the events mechanism, the function <code class="inline">ScrollAgent.events()</code> should be called. The reason the mechanism is not activated by default is to minimize the agent footprint and prevent unnecessary tracking of the window scroll.<br>The Scrolling events are triggered on the document and the window, and contain the <code class="inline">scrollup</code> and <code class="inline">scrolldown</code> events.</p>
+                                        <p>
+                                                <span class="label label-danger">Note</span> the fact that the <code class="inline">events</code> is a <b>static</b> method of the ScrollAgent, meaning it is not to be used on an instance of the ScrollAgent like the rest of the API, but exactly like in the example below.
+                                        </p>
+                                        <h6>Example?</h6>
+                                        <code class="js">ScrollAgent.events();
+$(window).on('scrollup', function() {
+	console.log('window scrolled up');
+});
+$(document).on('scrolldown', MethodFactory.log('window scrolled down')); // MethodFactory.log is a utility method of reaction agent to return a function that logs a message to console.</code>                                </section>
+                        </article>
+                </div>
+                <div class="col-sm-3 hidden-xs sidenav-wrapper">
+                        <ul class="nav sidenav">
+                        <li><a href="#what">What Does It Do?</a></li>
+                                        <li><a href="#basic-example">Let's Make It Simple!</a></li>
+                                        <li><a href="#api">The API</a></li>
+                                        <li>
+                                <ul class="nav">
+                                                                                        <li><a href="#add">Add</a></li>
+                                                                                        <li><a href="#remove">Remove</a></li>
+                                                                        </ul>
+                        </li>
+                                        <li><a href="#events">Events</a></li>
+                        </ul>                  </div>
+        </div>
+</div>                </main>
+                <footer>
+                        <div class="container-fluid">
+                                <div class="row equal-height">
+                                        <div class="col-sm-4 col-md-3 col-lg-2 mobile-bottom">
+                                                <h2><span class="red">reaction</span><span class="purple-light">agent</span></h2>
+                                                <p class="grey">
+                                                        A powerful light weight javascript
+                                                        framework to easily manage and track
+                                                        DOM Changes, keyboard and page
+                                                        scroll events.
+                                                </p>
+                                        </div>
+                                        <div class="col-sm-8 col-md-9 col-lg-10 text-right" style="vertical-align: middle;">
+                                                Hey guys! You are more than welcome to contact me regarding Reaction Agent framework at <a href="mailto:avivcarmis@gmail.com" title="Mail me...">avivcarmis@gmail.com</a>
+                                        </div>
+                                </div>
+                        </div>
+                </footer>
+        </body>
+</html>
