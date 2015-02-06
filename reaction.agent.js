@@ -1,7 +1,14 @@
+/*!
+ * ReactionAgent v1.1 (https://avivcarmis.github.io/reaction-agent)
+ * Copyright (c) 2015 Aviv Carmi
+ * Licensed under MIT (https://avivcarmis.github.io/reaction-agent/license)
+ */
+
 /**
  * Keypress Agent Module
+ * DOCS @ https://avivcarmis.github.io/reaction-agent/getting-started/keypress-agent
  */
-(function() {
+;(function($) {
 
         /**
          * @class KeypressAgent
@@ -13,38 +20,33 @@
          */
         function KeypressAgent() {
                 this.stack = [];
+                this.pressedKeys = {};
+                this.initialized = false;
+        }
+        
+        KeypressAgent.prototype.init = function() {
+                if (this.initialized) return;
+                this.initialized = true;
                 var thisPtr = this;
-                document.onkeydown = function(e) {
+                document.addEventListener('keydown', function(event) {
                         var layer = thisPtr.getActiveLayer();
                         if (layer === null) return;
-                        var status = layer.callHandlerByKeyCode(e.keyCode);
-                        return !status;
-                };
-        }
+                        var handlerCalled = layer.callHandlerByKeyCode(event);
+                        if (handlerCalled) {
+                                event.preventDefault();
+                        }
+                }, true);
+        };
         
         /**
          * Creates a fresh KeypressLayer object to be the currently active layer, and returns it's usage key
-         * @returns {Number}
+         * @returns {KeypressLayer}
          */
         KeypressAgent.prototype.createLayer = function() {
+                this.init();
                 var layer = new KeypressLayer();
                 this.stack.push(layer);
-                return layer.getKey();
-        };
-
-        /**
-         * Receive a KeypressLayer usage key, keypress event keyCode and a function handler for the press event,
-         * binds the keypress event to the handler in the KeypressLayer, and returns true upon success, or false if layer not found
-         * @param {Number} key
-         * @param {Number} keyCode
-         * @param {Function} handler
-         * @returns {Boolean}
-         */
-        KeypressAgent.prototype.addToLayer = function(key, keyCode, handler) {
-                var layer = this.getLayer(key);
-                if (layer === null) return false;
-                layer.add(keyCode, handler);
-                return true;
+                return layer;
         };
 
         /**
@@ -94,8 +96,8 @@
          * If called, prints keyCode value to console on every keypress event
          */
         KeypressAgent.prototype.mapToConsole = function() {
-                $(document).keyup(function(e) {
-                        console.log(e.keyCode);
+                document.addEventListener('keydown', function(event) {
+                        console.log(event.which || event.keyCode);
                 });
         };
         
@@ -121,6 +123,29 @@
          * Holds the next free layer key
          */
         KeypressLayer.freeKey = 0;
+        
+        /**
+         * @static
+         * Default combination key settings
+         */
+        KeypressLayer.defaultCombination = {
+                ctrl: false,
+                alt: false,
+                shift: false
+        };
+        
+        /**
+         * @static
+         * Receive a key value either as a key code value, or as a char, returns its key code value
+         * @param {Mixed} value
+         * @returns {Number}
+         */
+        KeypressLayer.normalizeKeyValue = function(value) {
+                if (value === 'ctrl') return 17;
+                if (value === 'alt') return 18;
+                if (value === 'shift') return 16;
+                return value.charCodeAt(0);
+        };
 
         /**
          * Returns the layer key
@@ -129,28 +154,56 @@
         KeypressLayer.prototype.getKey = function() {
                 return this.key;
         };
-
+        
         /**
-         * Receive keyCode and a handler function and add them to layer
-         * @param {Number} keyCode
+         * Receive keyCode as a char or a keyCode value, a handler function and a combination object and add them to the layer
+         * Returns the keypress layer object to enable method chaining
+         * @param {Mixed} key
          * @param {Function} handler
-         * @returns {undefined}
+         * @param {Object} combinations
+         * @returns {KeypressLayer}
          */
-        KeypressLayer.prototype.add = function(keyCode, handler) {
+        KeypressLayer.prototype.add = function(key, handler, combinations) {
+                if (typeof key === "string") {
+                        var upperCaseKeyCode = KeypressLayer.normalizeKeyValue(key.toUpperCase());
+                        var lowerCaseKeyCode = KeypressLayer.normalizeKeyValue(key.toLowerCase());
+                        this.add(upperCaseKeyCode, handler, combinations);
+                        if (lowerCaseKeyCode != upperCaseKeyCode) this.add(lowerCaseKeyCode, handler, combinations);
+                        return;
+                }
+                var combination = $.extend({}, KeypressLayer.defaultCombination, combinations);
                 if (typeof handler !== "function") throw "Keypress Layer handler must be a function. Received value was " + typeof handler;
-                this.data[keyCode] = handler;
+                if (!this.data[key]) this.data[key] = [];
+                this.data[key].push({combination: combination, handler: handler});
+                return this;
         };
-
+        
         /**
-         * Call the handler with the given keyCode, returns true if handler found, false otherwise.
-         * @param {Number} keyCode
+         * Receive a keypress event object and call the handler with the given keyCode and combination. Returns true if a matching handler was found, false otherwise.
+         * @param {Object} jqEventObject
          * @returns {Boolean}
          */
-        KeypressLayer.prototype.callHandlerByKeyCode = function(keyCode) {
-                var handler = this.data[keyCode];
-                if (notDefined(handler)) return false;
-                handler(keyCode);
-                return true;
+        KeypressLayer.prototype.callHandlerByKeyCode = function(eventObject) {
+                var keyCode = eventObject.which || eventObject.keyCode;
+                var handlerList = this.data[keyCode];
+                if (notDefined(handlerList)) return false;
+                for (var i = 0; i < handlerList.length; i++) {
+                        var combination = handlerList[i].combination;
+                        if (combination.ctrl != eventObject.ctrlKey) continue;
+                        if (combination.alt != eventObject.altKey) continue;
+                        if (combination.shift != eventObject.shiftKey) continue;
+                        handlerList[i].handler(keyCode);
+                        return true;
+                }
+                return false;
+        };
+        
+        /**
+         * Removes the layer from the KeypressAgent
+         * @returns {undefined}
+         */
+        KeypressLayer.prototype.destroy = function() {
+                window.KeypressAgent.removeLayer(this.key);
         };
         
         /**
@@ -160,12 +213,13 @@
         // export KeypressAgent instance
         window.KeypressAgent = new KeypressAgent();
 
-})();
+})(jQuery);
 
 /**
  * DOM Agent Module
+ * DOCS @ https://avivcarmis.github.io/reaction-agent/getting-started/dom-agent
  */
-(function() {
+(function($) {
         
         /**
          * @class DOMAgent
@@ -360,12 +414,13 @@
         // export KeypressAgent instance
         window.DOMAgent = new DOMAgent();
         
-})();
+})(jQuery);
 
 /**
  * Scroll Agent Module
+ * DOCS @ https://avivcarmis.github.io/reaction-agent/getting-started/scroll-agent
  */
-(function() {
+(function($) {
 
         /**
          * @class ScrollAgent
@@ -432,18 +487,19 @@
          * Initializes the event service
          * @returns {undefined}
          */
-        ScrollAgent.activateEvents = function() {
-                this.top = $(window).scrollTop();
-                var self = this;
+        ScrollAgent.events = function() {
+                if (ScrollAgent.eventsInitialized === true) return;
+                ScrollAgent.eventsInitialized = true;
+                ScrollAgent.top = $(window).scrollTop();
                 $(window).scroll(function() {
                         var currentTop = $(window).scrollTop();
-                        if (currentTop > self.top) {
-                                $(document).add(window).trigger('scrolldown');
+                        if (currentTop > ScrollAgent.top) {
+                                $(document).trigger('scrolldown');
                         }
                         else {
-                                $(document).add(window).trigger('scrollup');
+                                $(document).trigger('scrollup');
                         }
-                        self.top = currentTop;
+                        ScrollAgent.top = currentTop;
                 });
         };
         
@@ -546,10 +602,11 @@
         // export ScrollAgent class
         window.ScrollAgent = ScrollAgent;
         
-})();
+})(jQuery);
 
 /**
  * Validation Agent
+ * DOCS @ https://avivcarmis.github.io/reaction-agent/getting-started/validation-agent
  */
 (function($) {
         
@@ -673,6 +730,7 @@
 
 /**
  * jQuery Extensions
+ * DOCS @ https://avivcarmis.github.io/reaction-agent/getting-started/jquery-extensions
  */
 (function($) {
         
@@ -846,6 +904,7 @@
         
         /**
          * A set of function factory methods to easily create simple common functions.
+         * DOCS @ https://avivcarmis.github.io/reaction-agent/getting-started/method-factory
          * @static
          * @type Object
          */
