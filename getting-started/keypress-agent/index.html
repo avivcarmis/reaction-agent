@@ -64,7 +64,7 @@
                                 <section class="anchor" id="what">
                                         <h1>The Keypress Agent</h1>
                                         <p>The keypress agent becomes extremely helpful when developing a web application that enables the user interaction via keyboard, i.e. hot keys. The issues start when some features of your app add keyboard action that overlap with others.</p>
-                                        <p>For example, let's consider that we have a main screen that should output an alert message once we click the enter key. This is no problem, we can do it with <code class="inline">document.keypress</code> handler. Next, we add a modal screen (in-window popup) that prompts the user some yes-no question. Now if we want the enter key to apply the 'yes' option of the modal, we should first cancel the old <code class="inline">document.keypress</code> handler, and then add a new one. Once the modal is closed we should revert it.</p>
+                                        <p>For example, let's consider that we have a main screen that should output an alert message once we press the enter key. This is no problem, we can do it with <code class="inline">document.keypress</code> handler. Next, we add a modal screen (in-window popup) that prompts the user some yes-no question. Now if we want the enter key to apply the 'yes' option of the modal, we should first cancel the old <code class="inline">document.keypress</code> handler, and then add a new one. Once the modal is closed we should revert it.</p>
                                         <p>The KeypressAgent introduces a new way of managing these event types in web applications called layering.</p>
                                 </section>
                                 <section class="anchor" id="layering">
@@ -82,7 +82,7 @@
                 <p>The newly created keypress layer object.</p>
                                                 </section>                                        <section class="anchor" id="add">
         <h6>Add</h6>
-        <code>keypressLayerInstance.addKey(key, handler, [combinations]);</code>
+        <code>keypressLayerInstance.add(key, handler, [combinations]);</code>
                 <h6>What?</h6>
         <p>Adds a new functionality to the layer by specifying the target key, a handler function for such an event and optionally require ctrl, alt and shift keys.</p>
                         <h6>Returns?</h6>

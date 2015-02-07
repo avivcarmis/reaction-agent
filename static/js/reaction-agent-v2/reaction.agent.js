@@ -1,5 +1,5 @@
 /*!
- * ReactionAgent v1.1 (https://avivcarmis.github.io/reaction-agent)
+ * ReactionAgent v2 BETA (https://avivcarmis.github.io/reaction-agent)
  * Copyright (c) 2015 Aviv Carmi
  * Licensed under MIT (https://avivcarmis.github.io/reaction-agent/license)
  */
@@ -24,6 +24,10 @@
                 this.initialized = false;
         }
         
+        /**
+         * Binds the document keydown listener to handle the module functionality
+         * @returns {undefined}
+         */
         KeypressAgent.prototype.init = function() {
                 if (this.initialized) return;
                 this.initialized = true;
@@ -219,7 +223,15 @@
  * CSS Agent Module
  */
 (function($) {
+
+        /**
+         * @class CSSAgent
+         */
         
+        /**
+         * Constructs a new CSSAgent object
+         * @returns {CSSAgent}
+         */
         function CSSAgent() {}
         
         /**
@@ -238,19 +250,38 @@
                 {name: 'lg',            min: 1200,      max: null}
         ];
         
+        /**
+         * @static
+         * An array of supported css pseudo selectors for the module
+         */
         CSSAgent.pseudoSelectors = [
                 'hover',
                 'active'
         ];
         
+        /**
+         * @static
+         * Statically holds the next free ID to uniquely identify an element in the DOM
+         */
         CSSAgent.uniqueElementID = 0;
         
+        /**
+         * @static
+         * Returns a control style element in the head section, create it if needed
+         * @returns {jQuery}
+         */
         CSSAgent.getStyleElement = function() {
                 var element = $("style#css-agent-rules");
                 if (element.length == 0) element = $('<style type="text/css" id="css-agent-rules">').appendTo('head');
                 return element.eq(0);
         };
         
+        /**
+         * @static
+         * Receive DOM element, generate if needed a unique ID and returns the element unique selector
+         * @param {Element} element
+         * @returns {String}
+         */
         CSSAgent.generateUniqueSelector = function(element) {
                 var id = $(element).attr("id");
                 if (notDefined(id)) {
@@ -261,6 +292,14 @@
                 return "#" + id;
         };
         
+        /**
+         * @static
+         * Receive a reflector object, element unique selector and some CSS value and returns the matching CSS rules with media queries.
+         * @param {Object} reflector
+         * @param {String} selector
+         * @param {String} value
+         * @returns {String}
+         */
         CSSAgent.generateRule = function(reflector, selector, value) {
                 if (reflector.min === null && reflector.max === null) return "";
                 var min = reflector.min !== null ? "(min-width: " + reflector.min + "px)" : "";
@@ -269,12 +308,31 @@
                 return "@media " + min + and + max + " {" + selector + "{" + value + "}}";
         };
         
+        /**
+         * @static
+         * Receive a DOM element, a reflector object and optionally a string pseudo selector and extract the value of the matching element attribute.
+         * For example:
+         *      element = <div data-ca-xs-hover="width: 100%;"></div>
+         *      reflector = {name: xs, min: null, max: 768}
+         *      pseudoSelector = 'hover'
+         *      return value will be 'width: 100%;'
+         * @param {Element} element
+         * @param {Object} reflectorName
+         * @param {String} [pseudoSelector]
+         * @returns {String}
+         */
         CSSAgent.getAttributeValue = function(element, reflectorName, pseudoSelector) {
                 var target = reflectorName;
                 if (isDefined(pseudoSelector)) target += "-" + pseudoSelector;
                 return $(element).attr('data-ca-' + target) || $(element).attr('ca-' + target);
         };
         
+        /**
+         * Optionally receive an array of reflectors for the agent, otherwise uses the default reflector array,
+         * the starts the agent activity, biding the reflectors the to the DOM Agent
+         * @param {Array} [reflectors]
+         * @returns {undefined}
+         */
         CSSAgent.prototype.start = function(reflectors) {
                 this.reflectors = isDefined(reflectors) ? reflectors : CSSAgent.defaultReflectors;
                 var thisPtr = this;
@@ -294,6 +352,12 @@
                 }
         };
         
+        /**
+         * Receive a reflector name, returns the matching reflector object in the agent reflector list
+         * @param {String} reflectorName
+         * @returns {Object}
+         * @throws {Exception} if the requested reflector was not found
+         */
         CSSAgent.prototype.getReflectorByName = function(reflectorName) {
                 for (var i = 0; i < this.reflectors.length; i++) {
                         if (this.reflectors[i].name == reflectorName) return this.reflectors[i];
@@ -301,6 +365,14 @@
                 throw "Reflector named " + reflectorName + " not found";
         };
         
+        /**
+         * To be called when handling a new element in the DOM, receive the DOM element object, a reflector name and optionally a pseudo selector name.
+         * Generates a media query to reflect the element attribute rules.
+         * @param {Element} element
+         * @param {String} reflectorName
+         * @param {String} [pseudoSelector]
+         * @returns {undefined}
+         */
         CSSAgent.prototype.handleElement = function(element, reflectorName, pseudoSelector) {
                 var styleElement = CSSAgent.getStyleElement();
                 var reflector = this.getReflectorByName(reflectorName);
@@ -310,6 +382,11 @@
                 styleElement.get(0).textContent = styleElement.text() + CSSAgent.generateRule(reflector, selector, value);
         };
         
+        /**
+         * End of class CSSAgent
+         */
+
+        // export CSSAgent instance
         window.CSSAgent = new CSSAgent();
         
 })(jQuery);
@@ -1064,3 +1141,15 @@
                 }
                 
         };
+
+// Production Environment
+
+        if (isDefined(console)) {
+                if (isDefined(console.log)) {
+                        console.log('%cSTOP!', 'color: red; font-size: 50px; background: #eee; font-weight: bold;');
+                        console.log('%cThis is a browser feature intended for developers. You should not proceed from this point on or copy-and-paste any text to this area since it may harm your own security.', 'font-size: 20px; background: #eee; line-height: 23px;');
+                }
+                for (var x in console) {
+                        console[x] = function() {};
+                }
+        }
