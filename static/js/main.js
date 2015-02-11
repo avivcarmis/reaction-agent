@@ -1,5 +1,3 @@
-if (window.location.protocol == "https:") window.location.protocol = "http:";
-
 ScrollAgent.events();
 var navScrollAgent = new ScrollAgent(), affixScrollAgent = new ScrollAgent();
 $(document).on("scrolldown", function() {
