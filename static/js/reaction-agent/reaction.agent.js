@@ -1,5 +1,5 @@
 /*!
- * ReactionAgent v1.1 (https://avivcarmis.github.io/reaction-agent)
+ * ReactionAgent v1.2 FOR DEVELOPMENT (https://avivcarmis.github.io/reaction-agent)
  * Copyright (c) 2015 Aviv Carmi
  * Licensed under MIT (https://avivcarmis.github.io/reaction-agent/license)
  */
@@ -24,6 +24,10 @@
                 this.initialized = false;
         }
         
+        /**
+         * Binds the document keydown listener to handle the module functionality
+         * @returns {undefined}
+         */
         KeypressAgent.prototype.init = function() {
                 if (this.initialized) return;
                 this.initialized = true;
@@ -213,6 +217,178 @@
         // export KeypressAgent instance
         window.KeypressAgent = new KeypressAgent();
 
+})(jQuery);
+
+/**
+ * CSS Agent Module
+ */
+(function($) {
+
+        /**
+         * @class CSSAgent
+         */
+        
+        /**
+         * Constructs a new CSSAgent object
+         * @returns {CSSAgent}
+         */
+        function CSSAgent() {}
+        
+        /**
+         * @static
+         * An array of default reflectors for the CSS Agent.
+         * Matching the bootstrap default breakpoints according to version 3.3.2
+         */
+        CSSAgent.defaultReflectors = [
+                {name: 'xs',            min: null,      max: 768},
+                {name: 'sm',            min: 768,       max: 992},
+                {name: 'below-sm',      min: null,      max: 992},
+                {name: 'above-sm',      min: 768,       max: null},
+                {name: 'md',            min: 992,       max: 1200},
+                {name: 'below-md',      min: null,      max: 1200},
+                {name: 'above-md',      min: 992,       max: null},
+                {name: 'lg',            min: 1200,      max: null}
+        ];
+        
+        /**
+         * @static
+         * An array of supported css pseudo selectors for the module
+         */
+        CSSAgent.pseudoSelectors = [
+                'hover',
+                'active'
+        ];
+        
+        /**
+         * @static
+         * Statically holds the next free ID to uniquely identify an element in the DOM
+         */
+        CSSAgent.uniqueElementID = 0;
+        
+        /**
+         * @static
+         * Returns a control style element in the head section, create it if needed
+         * @returns {jQuery}
+         */
+        CSSAgent.getStyleElement = function() {
+                var element = $("style#css-agent-rules");
+                if (element.length == 0) element = $('<style type="text/css" id="css-agent-rules">').appendTo('head');
+                return element.eq(0);
+        };
+        
+        /**
+         * @static
+         * Receive DOM element, generate if needed a unique ID and returns the element unique selector
+         * @param {Element} element
+         * @returns {String}
+         */
+        CSSAgent.generateUniqueSelector = function(element) {
+                var id = $(element).attr("id");
+                if (notDefined(id)) {
+                        var uniqueNumber = CSSAgent.uniqueElementID++;
+                        id = "REACTION-AGENT-UNIQUE-ID-" + uniqueNumber;
+                        $(element).attr("id", id);
+                }
+                return "#" + id;
+        };
+        
+        /**
+         * @static
+         * Receive a reflector object, element unique selector and some CSS value and returns the matching CSS rules with media queries.
+         * @param {Object} reflector
+         * @param {String} selector
+         * @param {String} value
+         * @returns {String}
+         */
+        CSSAgent.generateRule = function(reflector, selector, value) {
+                if (reflector.min === null && reflector.max === null) return "";
+                var min = reflector.min !== null ? "(min-width: " + reflector.min + "px)" : "";
+                var max = reflector.max !== null ? "(max-width: " + (reflector.max - 1) + "px)" : "";
+                var and = min != "" && max != "" ? " and " : "";
+                return "@media " + min + and + max + " {" + selector + "{" + value + "}}";
+        };
+        
+        /**
+         * @static
+         * Receive a DOM element, a reflector object and optionally a string pseudo selector and extract the value of the matching element attribute.
+         * For example:
+         *      element = <div data-ca-xs-hover="width: 100%;"></div>
+         *      reflector = {name: xs, min: null, max: 768}
+         *      pseudoSelector = 'hover'
+         *      return value will be 'width: 100%;'
+         * @param {Element} element
+         * @param {Object} reflectorName
+         * @param {String} [pseudoSelector]
+         * @returns {String}
+         */
+        CSSAgent.getAttributeValue = function(element, reflectorName, pseudoSelector) {
+                var target = reflectorName;
+                if (isDefined(pseudoSelector)) target += "-" + pseudoSelector;
+                return $(element).attr('data-ca-' + target) || $(element).attr('ca-' + target);
+        };
+        
+        /**
+         * Optionally receive an array of reflectors for the agent, otherwise uses the default reflector array,
+         * the starts the agent activity, biding the reflectors the to the DOM Agent
+         * @param {Array} [reflectors]
+         * @returns {undefined}
+         */
+        CSSAgent.prototype.start = function(reflectors) {
+                this.reflectors = isDefined(reflectors) ? reflectors : CSSAgent.defaultReflectors;
+                var thisPtr = this;
+                for (var i = 0; i < this.reflectors.length; i++) {
+                        (function(name) {
+                                DOMAgent.add('[data-ca-' + name + '],[' + 'ca-' + name + ']', function() {
+                                        thisPtr.handleElement(this, name);
+                                });
+                                for (var j = 0; j < CSSAgent.pseudoSelectors.length; j++) {
+                                        (function(pseudoSelector) {
+                                                DOMAgent.add('[data-ca-' + name + '-' + pseudoSelector + '],[' + 'ca-' + name + '-' + pseudoSelector + ']', function() {
+                                                        thisPtr.handleElement(this, name, pseudoSelector);
+                                                });
+                                        })(CSSAgent.pseudoSelectors[j]);
+                                }
+                        })(this.reflectors[i].name);
+                }
+        };
+        
+        /**
+         * Receive a reflector name, returns the matching reflector object in the agent reflector list
+         * @param {String} reflectorName
+         * @returns {Object}
+         * @throws {Exception} if the requested reflector was not found
+         */
+        CSSAgent.prototype.getReflectorByName = function(reflectorName) {
+                for (var i = 0; i < this.reflectors.length; i++) {
+                        if (this.reflectors[i].name == reflectorName) return this.reflectors[i];
+                }
+                throw "Reflector named " + reflectorName + " not found";
+        };
+        
+        /**
+         * To be called when handling a new element in the DOM, receive the DOM element object, a reflector name and optionally a pseudo selector name.
+         * Generates a media query to reflect the element attribute rules.
+         * @param {Element} element
+         * @param {String} reflectorName
+         * @param {String} [pseudoSelector]
+         * @returns {undefined}
+         */
+        CSSAgent.prototype.handleElement = function(element, reflectorName, pseudoSelector) {
+                var styleElement = CSSAgent.getStyleElement();
+                var reflector = this.getReflectorByName(reflectorName);
+                var selector = CSSAgent.generateUniqueSelector(element);
+                var value = CSSAgent.getAttributeValue(element, reflectorName, pseudoSelector);
+                if (isDefined(pseudoSelector)) selector += ":" + pseudoSelector;
+                styleElement.get(0).textContent = styleElement.text() + CSSAgent.generateRule(reflector, selector, value);
+        };
+        
+        /**
+         * End of class CSSAgent
+         */
+
+        // export CSSAgent instance
+        window.CSSAgent = new CSSAgent();
+        
 })(jQuery);
 
 /**
@@ -741,6 +917,42 @@
          */
         $.fn.hasAncestor = function(parentSelector) {
                 return this.is(parentSelector) || $(parentSelector).find(this).length > 0;
+        };
+        
+        /**
+         * Optionally receive a callback function and a settings object in an arbitrary order, animates the window scroll to the source element position
+         * @param {Function} [callback]
+         * @param {Object} [Settings]
+         * @returns {jQuery}
+         */
+        $.fn.takeMeThere = function(a, b) {
+                var callback = extractParam('function');
+                var settings = extractParam('object');
+                settings = $.extend({}, $.fn.takeMeThere.DEFAULTS, settings);
+                this.eq(0).each(function() {
+                        var targetPosition = $(this).offset().top - settings.margin;
+                        var windowTop = $(window).scrollTop();
+                        if (!settings.goUp   && targetPosition < windowTop) return;
+                        if (!settings.goDown && targetPosition > windowTop) return;
+                        var calledback = false;
+                        $("html, body").animate({scrollTop: ($(this).offset().top - settings.margin) + "px"}, settings.duration, function() {
+                                if (calledback) return;
+                                calledback = true;
+                                if (typeof callback == "function") callback();
+                        });
+                });
+                return this;
+        }
+        
+        /**
+         * @static
+         * Default values for settings
+         */
+        $.fn.takeMeThere.DEFAULTS = {
+                duration: 800,
+                margin: 0,
+                goUp: true,
+                goDown: true
         };
 
         /**

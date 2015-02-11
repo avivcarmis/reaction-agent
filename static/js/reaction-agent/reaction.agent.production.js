@@ -1,5 +1,5 @@
 /*!
- * ReactionAgent v2 BETA (https://avivcarmis.github.io/reaction-agent)
+ * ReactionAgent v1.2 FOR PRODUCTION (https://avivcarmis.github.io/reaction-agent)
  * Copyright (c) 2015 Aviv Carmi
  * Licensed under MIT (https://avivcarmis.github.io/reaction-agent/license)
  */
@@ -94,15 +94,6 @@
                         if (layer.getKey() == key) return i;
                 }
                 return -1;
-        };
-
-        /**
-         * If called, prints keyCode value to console on every keypress event
-         */
-        KeypressAgent.prototype.mapToConsole = function() {
-                document.addEventListener('keydown', function(event) {
-                        console.log(event.which || event.keyCode);
-                });
         };
         
         /**
@@ -918,6 +909,42 @@
         $.fn.hasAncestor = function(parentSelector) {
                 return this.is(parentSelector) || $(parentSelector).find(this).length > 0;
         };
+        
+        /**
+         * Optionally receive a callback function and a settings object in an arbitrary order, animates the window scroll to the source element position
+         * @param {Function} [callback]
+         * @param {Object} [Settings]
+         * @returns {jQuery}
+         */
+        $.fn.takeMeThere = function(a, b) {
+                var callback = extractParam('function');
+                var settings = extractParam('object');
+                settings = $.extend({}, $.fn.takeMeThere.DEFAULTS, settings);
+                this.eq(0).each(function() {
+                        var targetPosition = $(this).offset().top - settings.margin;
+                        var windowTop = $(window).scrollTop();
+                        if (!settings.goUp   && targetPosition < windowTop) return;
+                        if (!settings.goDown && targetPosition > windowTop) return;
+                        var calledback = false;
+                        $("html, body").animate({scrollTop: ($(this).offset().top - settings.margin) + "px"}, settings.duration, function() {
+                                if (calledback) return;
+                                calledback = true;
+                                if (typeof callback == "function") callback();
+                        });
+                });
+                return this;
+        }
+        
+        /**
+         * @static
+         * Default values for settings
+         */
+        $.fn.takeMeThere.DEFAULTS = {
+                duration: 800,
+                margin: 0,
+                goUp: true,
+                goDown: true
+        };
 
         /**
          * Returns the current element width.
@@ -1085,50 +1112,6 @@
          * @type Object
          */
         var MethodFactory = {
-        
-                /**
-                 * Receive a string message, returns a function that logs the message to browser console.
-                 * @param {String} msg
-                 * @returns {Function}
-                 */
-                log: function(msg) {
-                        return function() {
-                                if (isDefined(console.log)) console.log(msg);
-                        };
-                },
-        
-                /**
-                 * Receive a string message, returns a function that debugs the message to browser console.
-                 * @param {String} msg
-                 * @returns {Function}
-                 */
-                debug: function(msg) {
-                        return function() {
-                                if (isDefined(console.debug)) console.debug(msg);
-                        };
-                },
-        
-                /**
-                 * Receive a string message, returns a function that errors the message to browser console.
-                 * @param {String} msg
-                 * @returns {Function}
-                 */
-                error: function(msg) {
-                        return function() {
-                                if (isDefined(console.error)) console.error(msg);
-                        };
-                },
-
-                /**
-                 * Receive a string message, returns a function that alerts the message.
-                 * @param {String} msg
-                 * @returns {Function}
-                 */
-                alert: function(msg) {
-                        return function() {
-                                alert(msg);
-                        };
-                },
                 
                 /**
                  * Returns a function that receive a string parameter and returns whether or not the string is not empty.

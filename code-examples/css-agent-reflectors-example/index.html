@@ -2,12 +2,12 @@
 <html lang="en">
         <head>
                 <meta charset="utf-8">
-                <title>DOM Agent Events Usage | Examples | REACTION AGENT</title>
+                <title>Using Custom Reflectors In CSS Agent | Examples | REACTION AGENT</title>
                 <link rel="icon" type="image/png" href="http://avivcarmis.github.io/reaction-agent/static/img/icon.png">
-                <link rel="canonical" href="http://avivcarmis.github.io/reaction-agent/code-examples/dom-agent-events">
+                <link rel="canonical" href="http://avivcarmis.github.io/reaction-agent/code-examples/css-agent-reflectors-example">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <meta name="description" content="An example of how to simplify the usage of jQuery plugins with the DOM Agent">
-                <meta name="keywords" content="dom agent events reaction agent example">
+                <meta name="description" content="An example defining and using custom created CSS Agent reflectors">
+                <meta name="keywords" content="custom reflectors inline style css agent reaction agent example">
                 <link rel="stylesheet" href="http://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap.min.css">
                 <link rel="stylesheet" href="http://avivcarmis.github.io/reaction-agent/static/css/vendor/bootstrap-theme.min.css">
                 <link href='//fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700|Anton' rel='stylesheet' type='text/css'>
@@ -63,145 +63,62 @@
                 <div class="col-xs-12">
                         <article>
                                 <section>
-                                        <h1>DOM Agent Events Examples</h1>
-                                        <p>In addition to the DOM elements constructor concept, the DOM Agent provide us with another powerful mechanism of triggering events of element inner DOM change.</p>
-                                        <p>This could be useful when we would like to receive updates and perform some actions when some element inner HTML gets changed.<br>The example below demonstrates a situation when we would like to show an alert message whenever the <code class="inline css">#example</code> element gets changed. This example situation can be extended into a real situation where we have a custom built scrollbar, and we want to update it whenever inner changes occur for example.</p>
+                                        <h1>CSS Agent Custom Reflectors Examples</h1>
+                                        <p>The behavior and HTML attribute parsing of the CSS Agent can be customized by setting custom reflectors when calling the <code class="inline">CSSAgent.start</code> function.</p>
+                                        <p>In this example we will configure 2 reflectors only, <code class="inline">big</code> which reflects viewport with width above or equal to 768 pixels (typically, everything but mobile device), and <code class="inline">small</code> which reflects viewports with width of up to 768 pixels (typically mobile devices). Lets check it out.</p>
                                 </section>
                                 <section>
                                         <h2>The Source Code</h2>
-                                        <code class="html">&lt;style&gt;
-        #example &gt; * {
-                min-height: 40px;
-                margin: 10px 0;
-                background: yellow;
-        }
-        #example &gt; *:nth-child(1) {
-                background: red;
-        }
-        #example &gt; *:nth-child(2) {
-                background: blue;
-        }
-        #example &gt; *:nth-child(3) {
-                background: green;
-        }
-        #example &gt; *:nth-child(4) {
-                background: black;
-        }
-        #example &gt; * &gt; * {
-                background: grey;
-                margin: 10px;
-                min-height: 20px;
-        }
-        #example &gt; * &gt; * &gt; * {
-                background: white;
-                margin: 10px;
-                min-height: 10px;
-        }
-        
-&lt;/style&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-        DOMAgent.init();
-        $(function() {
-                $(&quot;#example&quot;).on('domagentchange', function() {
-                        alert('changed!');
-                });
-        });
-        function appendAChild() {
-                $(&quot;#example&quot;).append('&lt;div&gt;');
-        }
-        function prependChild() {
-                $(&quot;#example&quot;).prepend('&lt;div&gt;');
-        }
-        function empty() {
-                $(&quot;#example&quot;).empty();
-        }
-        function prependToChild() {
-                $(&quot;#example &gt; *&quot;).eq(0).append('&lt;div&gt;grandchild&lt;/div&gt;');
-        }
-        function prependToGradchild() {
-                $(&quot;#example &gt; * &gt; *&quot;).eq(0).append('&lt;div&gt;great grandchild&lt;/div&gt;');
-        }
+                                        <code class="html">&lt;script type=&quot;text/javascript&quot;&gt;
+        CSSAgent.start([
+                {name: 'small', min: null, max: 768},
+                {name: 'big', min: 768, max: null}
+        ]);
 &lt;/script&gt;
-&lt;div id=&quot;example&quot;&gt;
-        &lt;div&gt;&lt;/div&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+        .red-box {
+                background: red;
+                height: 200px;
+                margin: 20px 0;
+        }
+&lt;/style&gt;
+&lt;div class=&quot;red-box&quot; data-ca-big=&quot;background: yellow;&quot;&gt;
+        This box is yellow on &lt;i&gt;big&lt;/i&gt; viewport, red otherwise
 &lt;/div&gt;
-&lt;div&gt;
-        &lt;button class=&quot;btn btn-default&quot; onclick=&quot;appendAChild()&quot;&gt;Append Child&lt;/button&gt;
-        &lt;button class=&quot;btn btn-default&quot; onclick=&quot;prependChild()&quot;&gt;Prepend Child&lt;/button&gt;
-        &lt;button class=&quot;btn btn-default&quot; onclick=&quot;empty()&quot;&gt;Empty&lt;/button&gt;
-        &lt;button class=&quot;btn btn-default&quot; onclick=&quot;prependToChild()&quot;&gt;Prepend To Child (Only if child exists)&lt;/button&gt;
-        &lt;button class=&quot;btn btn-default&quot; onclick=&quot;prependToGradchild()&quot;&gt;Prepend To Grandchild (Only if grandchild exists)&lt;/button&gt;
+&lt;div class=&quot;red-box&quot; data-ca-small=&quot;background: yellow;&quot;&gt;
+        This box is yellow on &lt;i&gt;small&lt;/i&gt; viewport, red otherwise
+&lt;/div&gt;
+&lt;div class=&quot;red-box&quot; data-ca-small-hover=&quot;background: yellow;&quot;&gt;
+        This box is yellow &lt;b&gt;on hover&lt;/b&gt; on &lt;i&gt;small&lt;/i&gt; viewport, red otherwise
 &lt;/div&gt;</code>                                </section>
                                 <section>
                                         <h2>The Result</h2>
-                                        <style>
-        #example > * {
-                min-height: 40px;
-                margin: 10px 0;
-                background: yellow;
-        }
-        #example > *:nth-child(1) {
-                background: red;
-        }
-        #example > *:nth-child(2) {
-                background: blue;
-        }
-        #example > *:nth-child(3) {
-                background: green;
-        }
-        #example > *:nth-child(4) {
-                background: black;
-        }
-        #example > * > * {
-                background: grey;
-                margin: 10px;
-                min-height: 20px;
-        }
-        #example > * > * > * {
-                background: white;
-                margin: 10px;
-                min-height: 10px;
-        }
-        
-</style>
-<script type="text/javascript">
-        DOMAgent.init();
-        $(function() {
-                $("#example").on('domagentchange', function() {
-                        alert('changed!');
-                });
-        });
-        function appendAChild() {
-                $("#example").append('<div>');
-        }
-        function prependChild() {
-                $("#example").prepend('<div>');
-        }
-        function empty() {
-                $("#example").empty();
-        }
-        function prependToChild() {
-                $("#example > *").eq(0).append('<div>grandchild</div>');
-        }
-        function prependToGradchild() {
-                $("#example > * > *").eq(0).append('<div>great grandchild</div>');
-        }
+                                        <script type="text/javascript">
+        CSSAgent.start([
+                {name: 'small', min: null, max: 768},
+                {name: 'big', min: 768, max: null}
+        ]);
 </script>
-<div id="example">
-        <div></div>
+<style type="text/css">
+        .red-box {
+                background: red;
+                height: 200px;
+                margin: 20px 0;
+        }
+</style>
+<div class="red-box" data-ca-big="background: yellow;">
+        This box is yellow on <i>big</i> viewport, red otherwise
 </div>
-<div>
-        <button class="btn btn-default" onclick="appendAChild()">Append Child</button>
-        <button class="btn btn-default" onclick="prependChild()">Prepend Child</button>
-        <button class="btn btn-default" onclick="empty()">Empty</button>
-        <button class="btn btn-default" onclick="prependToChild()">Prepend To Child (Only if child exists)</button>
-        <button class="btn btn-default" onclick="prependToGradchild()">Prepend To Grandchild (Only if grandchild exists)</button>
+<div class="red-box" data-ca-small="background: yellow;">
+        This box is yellow on <i>small</i> viewport, red otherwise
+</div>
+<div class="red-box" data-ca-small-hover="background: yellow;">
+        This box is yellow <b>on hover</b> on <i>small</i> viewport, red otherwise
 </div>                                </section>
                                 <section>
                                         <h2>Conclusions & Notes</h2>
                                         <ul>
-                                                <li>Do not get confused from the different colors, the main idea of the example is to demonstrate that the event listener react to any inner changes no matter at what depth they reside.</li>
-                                                <li>Note that in order to eliminate unnecessary use of resources, the DOM events module will not perform unless we explicitly calls the <code class="inline">DOMAgent.init()</code> function.</li>
+                                                <li>You may resize the browser window in order to view the different media query reactions.</li>
                                         </ul>
                                 </section>
                         </article>
