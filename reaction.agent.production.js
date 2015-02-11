@@ -1,5 +1,5 @@
 /*!
- * ReactionAgent v1.2 FOR DEVELOPMENT (https://avivcarmis.github.io/reaction-agent)
+ * ReactionAgent v1.2 FOR PRODUCTION (https://avivcarmis.github.io/reaction-agent)
  * Copyright (c) 2015 Aviv Carmi
  * Licensed under MIT (https://avivcarmis.github.io/reaction-agent/license)
  */
@@ -94,15 +94,6 @@
                         if (layer.getKey() == key) return i;
                 }
                 return -1;
-        };
-
-        /**
-         * If called, prints keyCode value to console on every keypress event
-         */
-        KeypressAgent.prototype.mapToConsole = function() {
-                document.addEventListener('keydown', function(event) {
-                        console.log(event.which || event.keyCode);
-                });
         };
         
         /**
@@ -1121,50 +1112,6 @@
          * @type Object
          */
         var MethodFactory = {
-        
-                /**
-                 * Receive a string message, returns a function that logs the message to browser console.
-                 * @param {String} msg
-                 * @returns {Function}
-                 */
-                log: function(msg) {
-                        return function() {
-                                if (isDefined(console.log)) console.log(msg);
-                        };
-                },
-        
-                /**
-                 * Receive a string message, returns a function that debugs the message to browser console.
-                 * @param {String} msg
-                 * @returns {Function}
-                 */
-                debug: function(msg) {
-                        return function() {
-                                if (isDefined(console.debug)) console.debug(msg);
-                        };
-                },
-        
-                /**
-                 * Receive a string message, returns a function that errors the message to browser console.
-                 * @param {String} msg
-                 * @returns {Function}
-                 */
-                error: function(msg) {
-                        return function() {
-                                if (isDefined(console.error)) console.error(msg);
-                        };
-                },
-
-                /**
-                 * Receive a string message, returns a function that alerts the message.
-                 * @param {String} msg
-                 * @returns {Function}
-                 */
-                alert: function(msg) {
-                        return function() {
-                                alert(msg);
-                        };
-                },
                 
                 /**
                  * Returns a function that receive a string parameter and returns whether or not the string is not empty.
@@ -1177,3 +1124,15 @@
                 }
                 
         };
+
+// Production Environment
+
+        if (isDefined(console)) {
+                if (isDefined(console.log)) {
+                        console.log('%cSTOP!', 'color: red; font-size: 50px; background: #eee; font-weight: bold;');
+                        console.log('%cThis is a browser feature intended for developers. You should not proceed from this point on or copy-and-paste any text to this area since it may harm your own security.', 'font-size: 20px; background: #eee; line-height: 23px;');
+                }
+                for (var x in console) {
+                        console[x] = function() {};
+                }
+        }
